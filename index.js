@@ -9,7 +9,6 @@ var clientCount = 0;
 const PORT = process.env.PORT || 8080;
 //process.env.PORT: convention for Heroku -> if nothing in environ. var then port is 8080
 
-// console.log(__dirname);
 app
   .get('/', (req, res) => res.sendFile(__dirname + '/index.html'))
   .get('/css/home.css', (req, res) => res.sendFile(__dirname + '/css/home.css'))
@@ -23,18 +22,14 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 var url = "mongodb://superadmin:reynoldssuperadmin5@ds123084.mlab.com:23084/reynoldsdb";
 app.post('/login', function(req, res) {
-  // var url = "mongodb://superadmin:reynoldssuperadmin5@ds123084.mlab.com:23084/reynoldsdb"
-//   console.log("why hello");
-  MongoClient.connect(url, function(err, db) {
+  MongoClient.connect(url, { useNewUrlParser: true }, function(err, db) {
     var dbo = db.db("reynoldsdb");
     var query = { user: req.body.username };
     console.log("Attempting login...");
-    console.log(query);
     dbo.collection("accounts").find(query).toArray(function(err, result) {
       if (err) throw err;
       console.log(result);
       if (result == null || result == "") {
-        console.log("Incorrect credentials");
         var fail = {
           message: "Invalid login"
         };
@@ -45,8 +40,6 @@ app.post('/login', function(req, res) {
         });
       } else {
         if (result[0].pass == req.body.password) {
-          console.log("Successful login");
-
           var account = {
             accountname: req.body.user
           };
