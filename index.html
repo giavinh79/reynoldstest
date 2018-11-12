@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Reynold's Board</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Oswald' rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/css?family=Michroma' rel='stylesheet'>
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:200,300,400,700,900" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="css/home.css">
+  </head>
+  <body>
+    <h1>Reynold's Board Homepage</h1>
+    <div class="loginWrapper">
+      <div class="signin">
+        <div>
+          <i class="fa fa-users" style="font-size:36px; padding-bottom: 0.3em;"></i>
+          <form id="signupForm" onsubmit="return validateForm()" action="signup" method="post">
+            <div class="input-group">
+              <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+              <input id="username" type="text" class="form-control" name="username" placeholder="Username" required>
+            </div>
+            <div class="input-group">
+              <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+              <input id="password" type="password" class="form-control" name="password" placeholder="Password" onkeyup="checkPass()" required>
+            </div>
+            <div class="input-group">
+              <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+              <input id="passwordConfirm" type="password" class="form-control" name="passwordTwo" placeholder="Confirm Password" onkeyup="checkPass()" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Login</button>
+          </form>
+        </div>
+      </div>
+      <div style="margin: 1rem 1rem 7rem 1rem; width: 0.5rem; background: grey;"></div>
+      <div class="signup">
+        <div>
+          <form id="signupForm" onsubmit="return validateForm()" action="signup" method="post">
+            <div class="input-group">
+              <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+              <input id="password" type="password" class="form-control" name="password" placeholder="Verification Key" onkeyup="checkPass()" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Verify</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+
+    </div>
+  </body>
+</html>

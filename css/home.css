@@ -1,0 +1,66 @@
+html {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  height: 99%;
+}
+
+h1 {
+  text-align: center;
+  font-size: 10rem;
+  padding: 2rem;
+  font-family: 'Montserrat';
+}
+
+.loginWrapper {
+  display: flex;
+  flex-direction: row;
+  height: 80%;
+  padding-top: 1rem;
+  /* font-size: 10rem; */
+  /* background-color: black; */
+}
+
+.signin {
+  display: flex;
+  flex: 1;
+  /* width: 50%; */
+  align-items: center;
+  justify-content: center;
+  /* margin: 2rem; */
+  /* background-color: grey; */
+}
+
+.signin div {
+  max-width: 30rem;
+  margin: 1rem 0;
+  text-align: center;
+  /* font-size: 20rem; */
+}
+
+.signup {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  /* margin: 2rem; */
+  /* background-color: pink; */
+  /* text-align: left; */
+}
+
+.signup div {
+  max-width: 30rem;
+  margin: 1rem 0;
+  text-align: center;
+}
+
+.footer {
+  height: 7rem;
+  background-color: #666;
+}
