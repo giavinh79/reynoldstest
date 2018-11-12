@@ -14,6 +14,21 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
     <link rel="stylesheet" href="css/home.css">
+    <script type="text/javascript">
+      function checkPass()
+      {
+        var form = document.getElementById("password");
+        var formConfirm = document.getElementById("passwordConfirm");
+        if (form.value == formConfirm.value)
+        {
+          formConfirm.style.backgroundColor = "rgba(154, 237, 161, 0.8)";
+        }
+        else
+        {
+          formConfirm.style.backgroundColor = "rgba(242, 135, 135, 0.5)";
+        }
+      }
+    </script>
   </head>
   <body>
     <h1>Reynold's Board Homepage</h1>
@@ -21,7 +36,7 @@
       <div class="signin">
         <div>
           <i class="fa fa-users" style="font-size:36px; padding-bottom: 0.3em;"></i>
-          <form id="signupForm" onsubmit="return validateForm()" action="signup" method="post">
+          <form id="loginForm" action="login" method="post">
             <div class="input-group">
               <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
               <input id="username" type="text" class="form-control" name="username" placeholder="Username" required>

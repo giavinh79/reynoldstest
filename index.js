@@ -12,7 +12,8 @@ const PORT = process.env.PORT || 8080;
 // console.log(__dirname);
 app
   .get('/', (req, res) => res.sendFile(__dirname + '/index.html'))
-  .get('/css/home.css', (req, res) => res.sendFile(__dirname + '/css/home.css'));
+  .get('/css/home.css', (req, res) => res.sendFile(__dirname + '/css/home.css'))
+  .get('/loggedin.html', (req, res) => res.sendFile(__dirname + '/loggedin.html'));
 //   .get('/', function(req, res) {
 //     res.sendFile(__dirname + '/index.html');
 //   })
@@ -21,14 +22,17 @@ const bodyParser = require('body-parser'); // Necessary to get form data with Ex
 app.use(bodyParser.urlencoded({ extended: true }));
 
 var url = "mongodb://superadmin:reynoldssuperadmin5@ds123084.mlab.com:23084/reynoldsdb";
-app.post('/database', function(req, res) {
+app.post('/login', function(req, res) {
   // var url = "mongodb://superadmin:reynoldssuperadmin5@ds123084.mlab.com:23084/reynoldsdb"
+//   console.log("why hello");
   MongoClient.connect(url, function(err, db) {
-    var dbo = db.db("chatclient");
-    var query = { user: req.body.user };
+    var dbo = db.db("reynoldsdb");
+    var query = { user: req.body.username };
     console.log("Attempting login...");
+    console.log(query);
     dbo.collection("accounts").find(query).toArray(function(err, result) {
       if (err) throw err;
+      console.log(result);
       if (result == null || result == "") {
         console.log("Incorrect credentials");
         var fail = {
@@ -40,7 +44,7 @@ app.post('/database', function(req, res) {
           res.send(html);
         });
       } else {
-        if (result[0].pass == req.body.pwd) {
+        if (result[0].pass == req.body.password) {
           console.log("Successful login");
 
           var account = {
