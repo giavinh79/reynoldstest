@@ -27,6 +27,16 @@ h1 {
   /* background-color: black; */
 }
 
+.loginWrapper button {
+  background-color: #3a9937;
+  border: none;
+  width: 100%;
+}
+
+.loginWrapper button:hover {
+  background-color: #367a34;
+}
+
 .signin {
   display: flex;
   flex: 1;
