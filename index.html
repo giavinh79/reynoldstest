@@ -4,8 +4,6 @@
     <meta charset="utf-8">
     <title>Reynold's Board</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link href='https://fonts.googleapis.com/css?family=Oswald' rel='stylesheet'>
-    <link href='https://fonts.googleapis.com/css?family=Michroma' rel='stylesheet'>
     <link href="https://fonts.googleapis.com/css?family=Montserrat:200,300,400,700,900" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
@@ -15,6 +13,22 @@
 
     <link rel="stylesheet" href="css/home.css">
     <script type="text/javascript">
+     $(document).ready(function() { // Preloader for website
+        $(window).on("load", function() {
+          if ('{{message}}'.charAt(0) != '{')
+          {
+            var message = document.getElementById('loginMessage');
+            message.style.display = "block";
+            message.innerHTML = '{{message}}';
+          }
+          else
+          {
+            var message = document.getElementById('loginMessage');
+            message.style.display = "none";
+          }
+        });
+      });
+
       function checkPass()
       {
         var form = document.getElementById("password");
@@ -51,6 +65,7 @@
             </div>
             <button type="submit" class="btn btn-primary btn-block">Login</button>
           </form>
+          <p id ="loginMessage" style="text-align: right; color: #c10505;"></p>
         </div>
       </div>
       <div style="margin: 1rem 1rem 7rem 1rem; width: 0.5rem; background: grey;"></div>

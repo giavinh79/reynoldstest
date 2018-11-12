@@ -36,7 +36,7 @@ app.post('/login', function(req, res) {
       if (result == null || result == "") {
         console.log("Incorrect credentials");
         var fail = {
-          message: "Incorrect credentials!"
+          message: "Invalid login"
         };
         fs.readFile(__dirname + '/index.html', 'utf8', (err, data) => {
           if (err) throw err;
@@ -60,7 +60,7 @@ app.post('/login', function(req, res) {
         } else {
           console.log("Incorrect credentials");
           var fail = {
-            message: "Incorrect credentials!"
+            message: "Invalid login"
           };
           fs.readFile(__dirname + '/index.html', 'utf8', (err, data) => {
             if (err) throw err;
