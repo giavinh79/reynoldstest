@@ -4,8 +4,6 @@
     <meta charset="utf-8">
     <title>Reynold's Board</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link href='https://fonts.googleapis.com/css?family=Oswald' rel='stylesheet'>
-    <link href='https://fonts.googleapis.com/css?family=Michroma' rel='stylesheet'>
     <link href="https://fonts.googleapis.com/css?family=Montserrat:200,300,400,700,900" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
@@ -14,6 +12,40 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
     <link rel="stylesheet" href="css/home.css">
+    <script>
+     $(document).ready(function() { // Preloader for website
+        $(window).on("load", function() {
+          if ('{{message}}'.charAt(0) != '{')
+          {
+            var message = document.getElementById('loginMessage');
+            message.style.display = "block";
+            message.innerHTML = '{{message}}';
+            var userInput = document.getElementById('username');
+            if (document.cookie.indexOf(";") < 0 && document.cookie.includes("invalidLogin"))
+            {
+              userInput.value = decodeURIComponent(document.cookie.substring(13, document.cookie.length));
+            }
+            else
+            {
+              if (document.cookie.match('invalidLogin=.*?(?:;)') == null)
+              {
+                userInput.value = decodeURIComponent(document.cookie.substring(document.cookie.indexOf("invalidLogin=")+13, document.cookie.length));
+              }
+              else
+              {
+                userInput.value = decodeURIComponent(document.cookie.match('invalidLogin=.*?(?:;)')[0].substring(13, document.cookie.length-1));
+              }
+
+            }
+          }
+          else
+          {
+            var message = document.getElementById('loginMessage');
+            message.style.display = "none";
+          }
+        });
+      });
+    </script>
   </head>
   <body>
     <h1>Reynold's Board Homepage</h1>
@@ -21,21 +53,18 @@
       <div class="signin">
         <div>
           <i class="fa fa-users" style="font-size:36px; padding-bottom: 0.3em;"></i>
-          <form id="signupForm" onsubmit="return validateForm()" action="signup" method="post">
+          <form id="loginForm" action="login" method="post">
             <div class="input-group">
               <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-              <input id="username" type="text" class="form-control" name="username" placeholder="Username" required>
+              <input id="username" type="text" class="form-control" name="username" placeholder="Username" autocomplete="username" required>
             </div>
             <div class="input-group">
               <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-              <input id="password" type="password" class="form-control" name="password" placeholder="Password" onkeyup="checkPass()" required>
-            </div>
-            <div class="input-group">
-              <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-              <input id="passwordConfirm" type="password" class="form-control" name="passwordTwo" placeholder="Confirm Password" onkeyup="checkPass()" required>
+              <input id="password" type="password" class="form-control" name="password" placeholder="Password" autocomplete="password" required>
             </div>
             <button type="submit" class="btn btn-primary btn-block">Login</button>
           </form>
+          <p id ="loginMessage" style="text-align: right; color: #c10505;"></p>
         </div>
       </div>
       <div style="margin: 1rem 1rem 7rem 1rem; width: 0.5rem; background: grey;"></div>
