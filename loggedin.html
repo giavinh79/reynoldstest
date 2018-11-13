@@ -10,20 +10,20 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>\
 
         <script>
-            $.ajax({
-                type: 'POST',
-                url: 'http://localhost:8080/verifyuser',
-                dataType: "json",
-                success: function (data) {
-                    if (data.status != 200)
-                    {
-                        window.location.replace("/");
-                    }
-                },
-                error: function (xhr, status, error) {
-                    window.location.replace("/");
-                }
-            });
+            // $.ajax({ Verifies whether client is a logged in user, if not, returns to homepage
+            //     type: 'POST',
+            //     url: 'http://localhost:8080/verifyuser',
+            //     dataType: "json",
+            //     success: function (data) {
+            //         if (data.status != 200)
+            //         {
+            //             window.location.replace("/");
+            //         }
+            //     },
+            //     error: function (xhr, status, error) {
+            //         window.location.replace("/");
+            //     }
+            // });
         </script>
     </head>
     <body>

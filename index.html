@@ -27,7 +27,15 @@
             }
             else
             {
-              userInput.value = decodeURIComponent(document.cookie.match('invalidLogin=.*?(?:;)').substring(13, document.cookie.length-1));
+              if (document.cookie.match('invalidLogin=.*?(?:;)') == null)
+              {
+                userInput.value = decodeURIComponent(document.cookie.substring(document.cookie.indexOf("invalidLogin=")+13, document.cookie.length));
+              }
+              else
+              {
+                userInput.value = decodeURIComponent(document.cookie.match('invalidLogin=.*?(?:;)')[0].substring(13, document.cookie.length-1));
+              }
+
             }
           }
           else

@@ -58,21 +58,11 @@ app.post('/login', function(req, res) {
                 };
 
                 var cookieOptions = {
-                    maxAge: 1000 * 60 * 10, // would expire after 2 minutes
-                    httpOnly: false, // true: The cookie only accessible by the web server
-                    signed: false// Signed: Cookie has a signature to show if user manually changed it
-                }
-                res.cookie('test', "tester", cookieOptions);
-                var cookieOptions = {
                     maxAge: 1000 * 60 * 120, // would expire after 2 hours (120 minutes)
                     httpOnly: true, // true: The cookie only accessible by the web server
                     signed: true // Signed: Cookie has a signature to show if user manually changed it
                 }
                 res.cookie('activeUser', result[0].verificationCode, cookieOptions);
-                // console.log(req.cookies);
-                // con
-                console.log("tf");
-                console.log(req.signedCookies);
                 fs.readFile(__dirname + '/loggedin.html', 'utf8', (err, data) => {
                     if (err) throw err;
                     var html = mustache.to_html(data, account); //template system used to generate dynamic HTML
@@ -80,7 +70,6 @@ app.post('/login', function(req, res) {
                 });
 
             } else {
-                // console.log("Incorrect credentials");
                 var fail = {
                     message: "Invalid login"
                 };
