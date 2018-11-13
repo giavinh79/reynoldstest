@@ -1,1 +1,63 @@
-LOGGED IN
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title>Reynold's Welcome</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>\
+
+        <script>
+        // function userExists() {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                console.log(this.responseText);
+                // var obj = JSON.parse(this.responseText);
+                // console.log(obj);
+                // console.log(obj.result);
+                // console.log(obj.result[0]);
+                // console.log(obj.result[0].sku);
+            }
+            };
+            // xhttp.open("GET", "http://127.0.0.1:8080/verifyuser", true);
+            // xhttp.setRequestHeader ("Access-Control-Request-Method", "GET");
+            // xhttp.setRequestHeader("Access-Control-Request-Headers", "Content-Type, Authorization");
+            // // xhttp.setRequestHeader("Access-Control-Request-Headers", "Content-Type, Authorization");
+            // xhttp.send('{ "user": "richards@gmail.com", "code": "123123" }');
+            // xhttp.send('{"clientKey":"0b387bc3-8f73-4ffb-833c-e1e589be2c8c","collection":"prodCategoryEnriched","area":"Production","skip":0,"pageSize":10,"fields":["*","id"],"refinements":[{"type":"Value","navigationName":"categories.1","value":"Furniture"}]}');
+            // xhttp.send('{ "product": "20101", "window": "month", "target": "productId"}');
+        // }
+        // userExists();
+//
+        $.ajax({
+            type: 'POST',
+            url: 'http://127.0.0.1:8080/verifyuser',
+            data: '{"user" : "richard@gmail.com", "code" : "123"}',
+            dataType: "json",
+            success: function (data) {
+                console.log(data.status);
+                if (data.status == 200)
+                {
+                    
+                }
+                else
+                {
+                    window.location.replace("/");
+                }
+                // var ret = jQuery.parseJSON(data);
+            // $('#lblResponse').html(ret.msg);
+            },
+            error: function (xhr, status, error) {
+                window.location.replace("/");
+            }
+    });
+        </script>
+    </head>
+    <body>
+
+    </body>
+</html>
+    

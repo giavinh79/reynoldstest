@@ -12,7 +12,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
     <link rel="stylesheet" href="css/home.css">
-    <script type="text/javascript">
+    <script>
      $(document).ready(function() { // Preloader for website
         $(window).on("load", function() {
           if ('{{message}}'.charAt(0) != '{')
@@ -20,6 +20,15 @@
             var message = document.getElementById('loginMessage');
             message.style.display = "block";
             message.innerHTML = '{{message}}';
+            var userInput = document.getElementById('username');
+            if (document.cookie.indexOf(";") < 0 && document.cookie.includes("invalidLogin"))
+            {
+              userInput.value = decodeURIComponent(document.cookie.substring(13, document.cookie.length));
+            }
+            else
+            {
+              userInput.value = decodeURIComponent(document.cookie.match('invalidLogin=.*?(?:;)').substring(13, document.cookie.length-1));
+            }
           }
           else
           {
@@ -39,11 +48,11 @@
           <form id="loginForm" action="login" method="post">
             <div class="input-group">
               <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-              <input id="username" type="text" class="form-control" name="username" placeholder="Username" required>
+              <input id="username" type="text" class="form-control" name="username" placeholder="Username" autocomplete="username" required>
             </div>
             <div class="input-group">
               <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-              <input id="password" type="password" class="form-control" name="password" placeholder="Password" required>
+              <input id="password" type="password" class="form-control" name="password" placeholder="Password" autocomplete="password" required>
             </div>
             <button type="submit" class="btn btn-primary btn-block">Login</button>
           </form>
