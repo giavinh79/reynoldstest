@@ -4,6 +4,8 @@ const http = require('http').Server(app);
 const fs = require('fs'); // bring in the file system api
 const mustache = require('mustache'); //{{}}
 const MongoClient = require('mongodb').MongoClient;
+const previewEmail = require('preview-email');
+const nodemailer = require('nodemailer');
 var clientCount = 0;
 
 const PORT = process.env.PORT || 8080;
@@ -80,27 +82,33 @@ app.post('/email', function(req, res) {
   function makeId() {
     var text = "";
     var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    for (var i = 0; i < 4; i++)
+    for (var i = 0; i < 6; i++)
       text += possible.charAt(Math.floor(Math.random() * possible.length));
 
     return text;
   }
 
   function sendEmail() {
-    var message = 'You have been invited to join the SOCS Reynolds Team. Varification Code: "' + VarCode + '"';
+    var message = 'You have been invited to join the SOCS Reynolds Team. Verification Code: "' + VarCode + '"';
+    var smtpTransport = require('nodemailer-smtp-transport');
 
-    var data = {
-      from: 'Reynold SOCS Board <postmaster@sandbox247382c0af194dee852b5c74afeca012.mailgun.org>',
+    var transport = nodemailer.createTransport(smtpTransport({
+      service: 'gmail',
+      host: 'smtp.gmail.com',
+      auth: {
+        user: 'blessstylesocs@gmail.com',
+        pass: 'Reynolds123'
+      }
+    }));
+
+    const data = {
+      from: 'blessstylesocs@gmail.com',
       to: req.body.email,
       subject: 'Admin Invitation',
-      text: message
+      html: '<p>'+ message + '</p>'
     };
 
-    console.log("Sent message: " + message + "  To: " + req.body.email);
-
-    /*mailgun.messages().send(data, function (error, body) {
-      console.log(body);
-    });*/
+    transport.sendMail(data).then(console.log).catch(console.error);
   }
 
   //check if varCode exists
@@ -122,7 +130,7 @@ app.post('/email', function(req, res) {
       });
     } while (exists)
 
-    var codeObj = { code: VarCode, active: "t" };
+    var codeObj = { code: VarCode, active: "t", email: req.body.email };
     dbo.collection("verificationCodes").insertOne(codeObj, function(err, res) {
       if (err) throw err;
       console.log("verification Code added");
