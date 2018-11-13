@@ -58,12 +58,13 @@ app.post('/login', function(req, res) {
                 };
 
                 var cookieOptions = {
-                    maxAge: 1000 * 60 * 2, // would expire after 15 minutes
+                    maxAge: 1000 * 60 * 120, // would expire after 2 hours (120 minutes)
                     httpOnly: false, // true: The cookie only accessible by the web server
                     signed: true // Signed: Cookie has a signature to show if user manually changed it
                 }
                 res.cookie('activeUser', result[0].verificationCode, cookieOptions);
-                console.log(req.cookies);
+                // console.log(req.cookies);
+                // con
                 console.log(req.signedCookies);
                 fs.readFile(__dirname + '/loggedin.html', 'utf8', (err, data) => {
                     if (err) throw err;
@@ -97,8 +98,9 @@ app.post('/login', function(req, res) {
 });
 
 app.post('/verifyuser', function(req, res) {
-    // console.log(req.body);
-    console.log(req.body.data);
+    console.log(req.body);
+    // console.log("body data" + req.body.data);
+    // console.log("cookies" + req.signedCookies);
     // console.log(req.data);
     // console.log("hi");
     if (true){
