@@ -5,7 +5,7 @@ const fs = require('fs'); // bring in the file system api
 const mustache = require('mustache'); //{{}}
 const MongoClient = require('mongodb').MongoClient;
 app.use(cookieParser("375025"));
-app.use(function(req, res, next) {
+app.use(function(req, res, next) { //CORS
     res.header('Access-Control-Allow-Origin', "*");
     res.header('Access-Control-Allow-Methods','GET,PUT,POST,DELETE');
     res.header('Access-Control-Allow-Headers', 'Content-Type');
@@ -58,13 +58,20 @@ app.post('/login', function(req, res) {
                 };
 
                 var cookieOptions = {
-                    maxAge: 1000 * 60 * 120, // would expire after 2 hours (120 minutes)
+                    maxAge: 1000 * 60 * 10, // would expire after 2 minutes
                     httpOnly: false, // true: The cookie only accessible by the web server
+                    signed: false// Signed: Cookie has a signature to show if user manually changed it
+                }
+                res.cookie('test', "tester", cookieOptions);
+                var cookieOptions = {
+                    maxAge: 1000 * 60 * 120, // would expire after 2 hours (120 minutes)
+                    httpOnly: true, // true: The cookie only accessible by the web server
                     signed: true // Signed: Cookie has a signature to show if user manually changed it
                 }
                 res.cookie('activeUser', result[0].verificationCode, cookieOptions);
                 // console.log(req.cookies);
                 // con
+                console.log("tf");
                 console.log(req.signedCookies);
                 fs.readFile(__dirname + '/loggedin.html', 'utf8', (err, data) => {
                     if (err) throw err;
@@ -98,17 +105,14 @@ app.post('/login', function(req, res) {
 });
 
 app.post('/verifyuser', function(req, res) {
-    console.log(req.body);
-    // console.log("body data" + req.body.data);
-    // console.log("cookies" + req.signedCookies);
-    // console.log(req.data);
-    // console.log("hi");
-    if (true){
-        res.end('{"success" : "Valid User", "status" : 200}');
-    }else{
+    if (req.signedCookies.activeUser == null)
+    {
         res.end('{"error" : "Invalid User", "status" : 401}');
     }
-
+    else
+    {
+        res.end('{"success" : "Valid User", "status" : 200}');
+    }
 });
 
 http.listen(PORT, function(){
