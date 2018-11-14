@@ -143,8 +143,44 @@ app.post('/signup', function(req, res) {
 });
 
 app.post('/registerAccount', function(req, res) {
-    console.log(req);
-    // res.send(loggedin.html);
+    MongoClient.connect(url, function(err, db) {
+        if (err) throw err;
+        var dbo = db.db("reynoldsdb");
+      
+        // var query = { user: req.body.inputEmail };
+        // dbo.collection("accounts").find(query).toArray(function(err, result) {
+        //   if (err) throw err;
+        //   if (!(result == null || result == "")) {
+        //     var fails = {
+        //       message: "Email already signed up!"
+        //     };
+        //     fs.readFile(__dirname + '/index.html', 'utf8', (err, data) => {
+        //       if (err) throw err;
+        //       var html = mustache.to_html(data, fails);
+        //       db.close();
+        //       res.send(html);
+        //     });
+        //   } else {
+        //     var dateStamp = new Date();
+            var myobj = { user: req.body.inputEmail, pass: req.body.inputPassword1, firstName: req.body.firstName, lastName: req.body.lastName, super: 0, verificationCode: req.body.inputCode};
+            dbo.collection("accounts").insertOne(myobj, function(err, res) 
+            {
+              if (err) throw err;
+              console.log("Account successfully created.");
+            });
+            var success = {
+              messageThree: "Sign up was successful."
+            };
+            
+            fs.readFile(__dirname + '/index.html', 'utf8', (err, data) => {
+              if (err) throw err;
+              var html = mustache.to_html(data, success);
+              db.close();
+              res.send(html);
+            });
+        //   }
+        // });
+      });
 });
 
 app.post('/verifyuser', function(req, res) {
