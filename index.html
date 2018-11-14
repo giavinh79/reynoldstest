@@ -13,11 +13,15 @@
 
     <link rel="stylesheet" href="css/home.css">
     <script>
-     $(document).ready(function() { // Preloader for website
-        $(window).on("load", function() {
+      window.history.pushState("", "", '/');
+      $(document).ready(function() { // Preloader for website
+          var message = document.getElementById('loginMessage');
+          message.style.display = "none";
+          var message = document.getElementById('verifyMessage');
+          message.style.display = "none";
           if ('{{message}}'.charAt(0) != '{')
           {
-            var message = document.getElementById('loginMessage');
+            message = document.getElementById('loginMessage');
             message.style.display = "block";
             message.innerHTML = '{{message}}';
             var userInput = document.getElementById('username');
@@ -35,15 +39,15 @@
               {
                 userInput.value = decodeURIComponent(document.cookie.match('invalidLogin=.*?(?:;)')[0].substring(13, document.cookie.length-1));
               }
-
             }
           }
-          else
+
+          if ('{{messageTwo}}'.charAt(0) != '{')
           {
-            var message = document.getElementById('loginMessage');
-            message.style.display = "none";
+            message = document.getElementById('verifyMessage');
+            message.style.display = "block";
+            message.innerHTML = '{{messageTwo}}';
           }
-        });
       });
     </script>
   </head>
@@ -76,6 +80,7 @@
               <input id="text" type="text" class="form-control" name="text" placeholder="Verification Key" required>
             </div>
             <button type="submit" class="btn btn-primary bnpmtn-block">Verify</button>
+            <p id ="verifyMessage" style="text-align: right; color: #c10505;"></p>
           </form>
         </div>
       </div>
