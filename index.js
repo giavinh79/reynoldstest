@@ -18,7 +18,10 @@ const PORT = process.env.PORT || 8080;
 app
   .get('/', (req, res) => res.sendFile(__dirname + '/index.html'))
   .get('/css/home.css', (req, res) => res.sendFile(__dirname + '/css/home.css'))
-  .get('/loggedin.html', (req, res) => res.sendFile(__dirname + '/loggedin.html'));
+  .get('/css/loggedin.css', (req, res) => res.sendFile(__dirname + '/css/loggedin.css'))
+  .get('/css/signup.css', (req, res) => res.sendFile(__dirname + '/css/signup.css'));
+//   .get('/loggedin.html', (req, res) => res.sendFile(__dirname + '/loggedin.html'));
+//   .get('/loggedin.html', (req, res) => res.sendFile(__dirname + '/loggedin.html'));
 //   .get('/', function(req, res) {
 //     res.sendFile(__dirname + '/index.html');
 //   })
@@ -91,6 +94,79 @@ app.post('/login', function(req, res) {
       db.close();
     });
   });
+});
+
+app.post('/signup', function(req, res) {
+    MongoClient.connect(url, { useNewUrlParser: true }, function(err, db) {
+      var dbo = db.db("reynoldsdb");
+      var query = { code: req.body.text };
+      dbo.collection("verificationCodes").find(query).toArray(function(err, result) {
+        if (err) throw err;
+        if (result == null || result == "") {
+          var fail = {
+            messageTwo: "Invalid verification code."
+          };
+  
+          fs.readFile(__dirname + '/index.html', 'utf8', (err, data) => {
+            if (err) throw err;
+            var html = mustache.to_html(data, fail);
+            res.send(html);
+          });
+        } else {
+              if (result[0].active == 't') {
+                var account = {
+                    userCode: result[0].code,
+                    userEmail: result[0].email
+                };
+                fs.readFile(__dirname + '/signup.html', 'utf8', (err, data) => {
+                    if (err) throw err;
+                    var html = mustache.to_html(data, account); //template system used to generate dynamic HTML
+                    res.send(html);
+                });
+  
+              } else {
+                  var fail = {
+                      messageTwo: "Invalid verification code."
+                  };
+  
+                  fs.readFile(__dirname + '/index.html', 'utf8', (err, data) => {
+                      if (err) throw err;
+                      var html = mustache.to_html(data, fail);
+                      res.send(html);
+                  });
+              }
+        }
+        db.close();
+      });
+    });
+});
+
+app.post('/registerAccount', function(req, res) {
+    MongoClient.connect(url, { useNewUrlParser: true }, function(err, db) {
+        if (err) throw err;
+        var dbo = db.db("reynoldsdb");
+        var myobj = { user: req.body.inputEmail, pass: req.body.inputPassword1, firstName: req.body.firstName, lastName: req.body.lastName, super: 0, verificationCode: req.body.inputCode};
+        dbo.collection("accounts").insertOne(myobj, function(err, res) 
+        {
+            if (err) throw err;
+            if (!err) console.log("Account successfully created.");
+        });
+        var success = {
+            messageTwo: "Account successfully created."
+        };
+
+        var query = { code: req.body.inputCode };
+        var newvalues = { $set: {active: "f" } };
+        dbo.collection("verificationCodes").updateOne(query, newvalues, function(err, res) {
+            if (err) throw err;
+        });
+        fs.readFile(__dirname + '/index.html', 'utf8', (err, data) => {
+            if (err) throw err;
+            var html = mustache.to_html(data, success);
+            db.close();
+            res.send(html);
+        });
+      });
 });
 
 app.post('/verifyuser', function(req, res) {
