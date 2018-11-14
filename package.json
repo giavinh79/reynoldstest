@@ -1,0 +1,29 @@
+{
+  "name": "socsreynolds",
+  "version": "0.0.5",
+  "description": "Reynold's Signage",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "cookie-parser": "^1.4.3",
+    "express": "^4.16.4",
+    "mongodb": "^3.1.9",
+    "mustache": "^3.0.1"
+  },
+  "engines": {
+    "node": "8.11.1"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GV79/reynoldstest.git"
+  },
+  "author": "Blesstyle",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/GV79/reynoldstest/issues"
+  },
+  "homepage": "https://github.com/GV79/reynoldstest#readme"
+}
