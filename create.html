@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title>Reynold's Welcome</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+        <!-- Bootstrap -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+        <!-- Datepicker
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.14.30/js/bootstrap-datetimepicker.min.js"></script> -->
+
+        <script src="lib/dropzone.js"></script>
+        <link rel="stylesheet" href="css/dropzone.css">
+
+        <link rel="stylesheet" href="css/create.css">
+        <script>
+            $(document).ready(function() {
+                var today = new Date();
+                var dd = today.getDate();
+                var mm = today.getMonth()+1; //January is 0!
+                var yyyy = today.getFullYear();
+
+                if (dd < 10) {
+                    dd = '0' + dd;
+                } 
+
+                if (mm < 10) {
+                    mm = '0' + mm;
+                } 
+
+                today = yyyy + '-' + mm + '-' + dd;
+                $('#datePicker').attr("value", today);
+                // today = yyyy + '-' + mm + '-' + dd-1;
+                $('#datePicker').attr("min", today);
+            });
+        </script>
+    </head>
+    <body>
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <ul class="nav navbar-nav">
+                <li><a href="#">View</a></li>
+                <li  class="active"><a href="#">Create</a></li>
+                <li><a href="#">Edit/Delete</a></li>
+                <li><a href="#">Settings</a></li>
+                <li id="logout"><a href="#">Logout</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <div class="createWrapper">
+            <!-- upon successful registration, change verification code flag to false (unavailable) -->
+            <form id="signupForm" onsubmit="return checkPass()" action="registerAccount" method="post">
+                <div class="form-group">
+                    <label for="inputTitle">Title</label>
+                    <input type="text" class="form-control" id="inputTitle" name="inputTitle">
+                </div>
+                <div class="form-group">
+                    <label for="start">Start Date</label><br>
+                    <input id="datePicker" type='date' class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label for="firstName">Upload Content</label>
+
+                </div>
+                
+                <div class="form-group">
+                    <label for="inputDuration">Duration</label>
+                    <input type="text" class="form-control" id="inputDuration" name="inputDuration" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+
+            <br>
+            <form action="/file-upload" method="post" class="dropzone" id="my-awesome-dropzone""></form>
+        </div>
+    </body>
+</html>
+    

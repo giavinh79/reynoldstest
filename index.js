@@ -4,6 +4,7 @@ const cookieParser = require('cookie-parser');
 const fs = require('fs'); // bring in the file system api
 const mustache = require('mustache'); //{{}}
 const MongoClient = require('mongodb').MongoClient;
+const cloudinary = require('cloudinary');
 app.use(cookieParser("375025"));
 app.use(function(req, res, next) { //CORS
     res.header('Access-Control-Allow-Origin', "*");
@@ -17,9 +18,14 @@ const PORT = process.env.PORT || 8080;
 
 app
   .get('/', (req, res) => res.sendFile(__dirname + '/index.html'))
+  .get('/create.html', (req, res) => res.sendFile(__dirname + '/create.html'))
   .get('/css/home.css', (req, res) => res.sendFile(__dirname + '/css/home.css'))
+  .get('/css/create.css', (req, res) => res.sendFile(__dirname + '/css/create.css'))
+  .get('/css/dropzone.css', (req, res) => res.sendFile(__dirname + '/css/dropzone.css'))
+  .get('/lib/dropzone.js', (req, res) => res.sendFile(__dirname + '/lib/dropzone.js'))
   .get('/css/loggedin.css', (req, res) => res.sendFile(__dirname + '/css/loggedin.css'))
-  .get('/css/signup.css', (req, res) => res.sendFile(__dirname + '/css/signup.css'));
+  .get('/css/signup.css', (req, res) => res.sendFile(__dirname + '/css/signup.css'))
+  .get('/res/CompanyName.png', (req, res) => res.sendFile(__dirname + '/res/CompanyName.png'));
 //   .get('/loggedin.html', (req, res) => res.sendFile(__dirname + '/loggedin.html'));
 //   .get('/loggedin.html', (req, res) => res.sendFile(__dirname + '/loggedin.html'));
 //   .get('/', function(req, res) {
@@ -178,6 +184,19 @@ app.post('/verifyuser', function(req, res) {
     {
         res.end('{"success" : "Valid User", "status" : 200}');
     }
+});
+
+app.post('/file-upload', function(req, res) {
+    req.file
+    // console.log(req);
+    // cloudinary.config({ 
+    //     cloud_name: 'dhwlyljdd', 
+    //     api_key: '751525171794449', 
+    //     api_secret: 'NHBYucD3tJPm6AOPRa0ZAeptoKc' 
+    //   });
+
+    // cloudinary.v2.uploader.upload("my_picture.jpg", 
+    // function(error, result) {console.log(result, error)});
 });
 
 http.listen(PORT, function(){
