@@ -187,7 +187,7 @@ app.post('/verifyuser', function(req, res) {
 });
 
 app.post('/file-upload', function(req, res) {
-    req.file
+    // req.file
     // console.log(req);
     // cloudinary.config({ 
     //     cloud_name: 'dhwlyljdd', 
