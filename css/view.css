@@ -1,0 +1,23 @@
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
+ul.navbar-nav {
+    width: 100%;
+}
+
+ul.navbar-nav li:nth-child(5) {
+    margin-left: auto;
+    float: right;
+}
+
+.addAdmin div {
+  max-width: 30rem;
+  margin: 1rem 0;
+  text-align: left;
+}
+
+.addAdmin {
+  padding: 10px;
+}

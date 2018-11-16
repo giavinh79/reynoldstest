@@ -20,8 +20,10 @@ const PORT = process.env.PORT || 8080;
 app
   .get('/', (req, res) => res.sendFile(__dirname + '/index.html'))
   .get('/css/home.css', (req, res) => res.sendFile(__dirname + '/css/home.css'))
+  .get('/css/view.css', (req, res) => res.sendFile(__dirname + '/css/view.css'))
   .get('/css/loggedin.css', (req, res) => res.sendFile(__dirname + '/css/loggedin.css'))
   .get('/settings.html', (req, res) => res.sendFile(__dirname + '/settings.html'))
+  .get('/view.html', (req, res) => res.sendFile(__dirname + '/view.html'))
   .get('/css/settings.css', (req, res) => res.sendFile(__dirname + '/css/settings.css'))
   .get('/css/signup.css', (req, res) => res.sendFile(__dirname + '/css/signup.css'));
 //   .get('/loggedin.html', (req, res) => res.sendFile(__dirname + '/loggedin.html'));
