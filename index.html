@@ -74,6 +74,13 @@
       <div style="margin: 1rem 1rem 7rem 1rem; width: 0.5rem; background: grey;"></div>
       <div class="signup">
         <div>
+          <form id="emailForm" action="email" method="post">
+            <div class="input-group">
+              <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+              <input id="email" type="text" class="form-control" name="email" placeholder="Email" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Add Admin</button>
+          </form>
           <form id="signupForm" onsubmit="return validateForm()" action="signup" method="post">
             <div class="input-group">
               <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
