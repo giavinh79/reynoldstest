@@ -1,7 +1,7 @@
 # CIS*3750 section 2 group 5
 
 ## Site: http://www.socsreynolds.site
-  * Login user: richard@gmail.com password:bald
+  * Sample Super Admin login - user: richard@gmail.com password: bald
 
   ### Setup:
  * git clone https://github.com/GV79/reynoldstest.git
