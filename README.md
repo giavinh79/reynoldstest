@@ -9,6 +9,7 @@
  
  ### How to run this project (need to have node installed):
  * node index.js or npm start
+ * open up localhost:8080 on your browser
  
  ### How to contribute to this project:
  * git checkout master
