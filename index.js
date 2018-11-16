@@ -4,7 +4,6 @@ const cookieParser = require('cookie-parser');
 const fs = require('fs'); // bring in the file system api
 const mustache = require('mustache'); //{{}}
 const MongoClient = require('mongodb').MongoClient;
-const previewEmail = require('preview-email');
 const nodemailer = require('nodemailer');
 
 app.use(cookieParser("375025"));
