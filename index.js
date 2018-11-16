@@ -15,7 +15,6 @@ app.use(function(req, res, next) { //CORS
     next();
 })
 
-
 const PORT = process.env.PORT || 8080;
 //process.env.PORT: convention for Heroku -> if nothing in environ. var then port is 8080
 
@@ -354,8 +353,6 @@ app.post('/email', function(req, res) {
       db.close();
     });
   });
-
-
 
 });
 
