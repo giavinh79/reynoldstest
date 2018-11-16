@@ -1,6 +1,7 @@
 # CIS*3750 section 2 group 5
 
 ## Site: http://www.socsreynolds.site
+  * Login user: richard@gmail.com password:bald
 
   ### Setup:
  * git clone https://github.com/GV79/reynoldstest.git
@@ -11,9 +12,9 @@
  
  ### How to contribute to this project:
  * git checkout master
- * git pull
+ * git pull (Dont't do this if you already Have changes. Go stright to the next step)
  * git checkout -b BranchName       <- whatever u want
- * MAKE YOUR CHANGE
+ * **MAKE YOUR CHANGE**
  * git add --all
  * git commit -m "your message"
  * git push --set-upstream origin BranchName        <- same as above
