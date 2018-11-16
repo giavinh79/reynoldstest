@@ -12,7 +12,12 @@ ul.navbar-nav li:nth-child(5) {
     float: right;
 }
 
-/* #logout {
-    margin-left: auto;
-    float: right;
-} */
+.addAdmin div {
+  max-width: 30rem;
+  margin: 1rem 0;
+  text-align: left;
+}
+
+.addAdmin {
+  padding: 10px;
+}
