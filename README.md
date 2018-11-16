@@ -20,6 +20,6 @@
  * git push --set-upstream origin BranchName        <- same as above
  * OPEN Github -> https://github.com/GV79/reynoldstest
  * you should see a popup to "Create a pull request" of your branch, click it
- * write whatever you want in the textbox and click "Create pull request"
+ * write whatever you want in the textbox, add Giavinh as reviewer, and click "Create pull request"
  * Message Greg or Giavinh about merging it 
  
