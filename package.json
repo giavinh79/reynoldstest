@@ -10,7 +10,8 @@
     "cookie-parser": "^1.4.3",
     "express": "^4.16.4",
     "mongodb": "^3.1.9",
-    "mustache": "^3.0.1"
+    "mustache": "^3.0.1",
+    "nodemailer": "^4.6.8"
   },
   "engines": {
     "node": "8.11.1"
