@@ -13,11 +13,19 @@
         <script>
             window.history.pushState("", "", '/');
             $(document).ready(function() {
+              //Add Admin Confirmation/Error message
               if ('{{message}}'.charAt(0) != '{')
               {
                 message = document.getElementById('verifyMessage');
                 message.style.display = "block";
                 message.innerHTML = '{{message}}';
+              }
+              //Admin Tbale Setup
+              if ('{{admins}}'.charAt(0) != '{')
+              {
+                admins = document.getElementById('listOfAdmins');
+                admins.style.display = "block";
+                admins.innerHTML = '{{admins}}'[0];
               }
             });
         </script>
@@ -26,9 +34,9 @@
       <nav class="navbar navbar-default">
           <div class="container-fluid">
               <ul class="nav navbar-nav">
-                <li><a href="#View">View</a></li>
-                <li><a href="#Create">Create</a></li>
-                <li><a href="#Edit">Edit/Delete</a></li>
+                <li><a href="loggedin.html">View</a></li>
+                <li><a href="create.html">Create</a></li>
+                <li><a href="edit.html">Edit</a></li>
                 <li class="active"><a href="settings.html">Settings</a></li>
                 <li id="logout"><a href="#">Logout</a></li>
               </ul>
@@ -36,6 +44,7 @@
       </nav>
       <h3>Settings</h3>
       <div class="addAdmin">
+        <h3>Permissions</h3>
         <form id="emailForm" action="email" method="post">
           <div class="input-group">
             <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
@@ -44,6 +53,43 @@
           <button type="submit" class="btn btn-primary" style="min-width: 300px;">Add Admin</button>
           <p id ="verifyMessage" style="color: green;"></p>
         </form>
+      </div>
+      <form id="emailForm" action="admins" method="post">
+        <button type="submit" class="btn btn-primary" style="min-width: 300px;">See admins</button>
+      </form>
+      <div style="padding: 10px">
+        <h3>Admins</h3>
+        <p id ="listOfAdmins">Responce</p>
+        <table class="adminTable table table-striped">
+          <thead>
+            <tr>
+              <th scope="col">Role</th>
+              <th scope="col">Name</th>
+              <th scope="col">Email</th>
+              <th scope="col">Delete</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Mark</td>
+              <td>Otto</td>
+              <td>@mdo</td>
+              <td>@mdo</td>
+            </tr>
+            <tr>
+              <td>Jacob</td>
+              <td>Thornton</td>
+              <td>@fat</td>
+              <td>@mdo</td>
+            </tr>
+            <tr>
+              <td>Larry</td>
+              <td>the Bird</td>
+              <td>@twitter</td>
+              <td>@mdo</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </body>
 </html>

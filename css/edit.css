@@ -1,0 +1,13 @@
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
+ul.navbar-nav {
+    width: 100%;
+}
+
+ul.navbar-nav li:nth-child(5) {
+    margin-left: auto;
+    float: right;
+}

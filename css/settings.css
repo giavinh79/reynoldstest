@@ -21,3 +21,8 @@ ul.navbar-nav li:nth-child(5) {
 .addAdmin {
   padding: 10px;
 }
+
+.adminTable {
+  max-width: 60rem;
+  padding: 10px;
+}

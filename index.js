@@ -21,8 +21,11 @@ app
   .get('/', (req, res) => res.sendFile(__dirname + '/index.html'))
   .get('/css/home.css', (req, res) => res.sendFile(__dirname + '/css/home.css'))
   .get('/css/loggedin.css', (req, res) => res.sendFile(__dirname + '/css/loggedin.css'))
+  .get('/loggedin.html', (req, res) => res.sendFile(__dirname + '/loggedin.html'))
   .get('/settings.html', (req, res) => res.sendFile(__dirname + '/settings.html'))
   .get('/css/settings.css', (req, res) => res.sendFile(__dirname + '/css/settings.css'))
+  .get('/edit.html', (req, res) => res.sendFile(__dirname + '/edit.html'))
+  .get('/css/edit.css', (req, res) => res.sendFile(__dirname + '/css/edit.css'))
   .get('/css/signup.css', (req, res) => res.sendFile(__dirname + '/css/signup.css'));
 //   .get('/loggedin.html', (req, res) => res.sendFile(__dirname + '/loggedin.html'));
 //   .get('/loggedin.html', (req, res) => res.sendFile(__dirname + '/loggedin.html'));
@@ -275,6 +278,38 @@ app.post('/email', function(req, res) {
         fs.readFile(__dirname + '/settings.html', 'utf8', (err, data) => {
             if (err) throw err;
             var html = mustache.to_html(data, message);
+            res.send(html);
+        });
+      }
+      db.close();
+    });
+  });
+});
+
+app.post('/admins', function(req, res) {
+  var listOfAdmins = [];
+  MongoClient.connect(url, function(err, db) {
+    var dbo = db.db("reynoldsdb");
+    dbo.collection("accounts").find({}).toArray(function(err, result) {
+      if (err) throw err;
+      if (result == null || result == "") {
+        //nothing
+      } else {
+        for (var i = 0; i < result.length; i++) {
+            var admin = {
+              role: (result[i].super === 1) ? 'Super Admin' : 'Admin',
+              name: result[i].lastName + ", "+ result[i].firstName,
+              email:result[i].user
+            };
+            listOfAdmins.push(admin);
+        }
+        console.log(listOfAdmins);
+        var admins = {
+            admins: listOfAdmins
+        };
+        fs.readFile(__dirname + '/settings.html', 'utf8', (err, data) => {
+            if (err) throw err;
+            var html = mustache.to_html(data, admins);
             res.send(html);
         });
       }
