@@ -11,7 +11,66 @@ ul.navbar-nav li:nth-child(5) {
     margin-left: auto;
     float: right;
 }
+.socsheader {
+    position: absolute;
+    left: 100px;
+    top: 80px;
+}
+.timeandweather {
+    position: absolute;
+    left: 100px;
+    top: 150px;
+}
+.header{
 
+    color:blue;
+   
+     
+  
+}
+.test1 {
+	border: 1px solid;
+    border-color:red;
+    width: 460px;
+    height: 100px;
+}
+.test2{
+    border: 1px solid;
+    border-color:aqua;
+    width: 530px;
+    height: 70px;
+
+  
+
+}
+.test {
+    /*font-family: consolas;*/
+  
+    font-family: consolas;
+   
+  }
+
+.test3{
+
+    color: black;
+    font-family:serif;
+}
+.headerid{
+    position: absolute;
+    left: 950px;
+    top: 100px;
+    color: blue;
+    font-family:consolas;
+
+}
+.vl {
+    border-left: 6px solid rgb(69, 67, 71);
+    height: 500px;
+    position: absolute;
+    left: 50%;
+    margin-left: -3px;
+    top: 100;
+}
 /* #logout {
     margin-left: auto;
     float: right;

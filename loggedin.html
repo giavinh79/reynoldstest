@@ -11,6 +11,7 @@
 
         <link rel="stylesheet" href="css/loggedin.css">
         <script>
+            //console.log("before");
             // $.ajax({ Verifies whether client is a logged in user, if not, returns to homepage
             //     type: 'POST',
             //     url: 'http://localhost:8080/verifyuser',
@@ -29,11 +30,137 @@
             $(document).ready(function() {
               if ('{{message}}'.charAt(0) != '{')
               {
-                message = document.getElementById('verifyMessage');
+               /* message = document.getElementById('verifyMessage');
                 message.style.display = "block";
                 message.innerHTML = '{{message}}';
+                */
+           
+
+               startTime();
+                //document.getElementById("demo").innerHTML = d;
               }
+              
+                function startTime()
+                {
+                        //onsole.log("it is coming to this functin");
+                        let dateObj= new Date();
+                        let month = dateObj.getMonth();
+                        let monthStr = "";
+                        if(month == 0)
+                        {
+                            monthStr = "January";
+                        }
+                        else if(month == 1)
+                        {
+                            monthStr = "Febuary";
+                        }
+                        else if(month == 2)
+                        {
+                            monthStr = "March";
+                        }
+                        else if(month == 3)
+                        {
+                            monthStr = "April";
+                        }
+                        else if(month == 4)
+                        {
+                            monthStr = "May";
+                        }
+                        else if(month == 5)
+                        {
+                            monthStr = "June";
+                        }
+                        else if(month == 6)
+                        {
+                            monthStr = "July";
+                        }
+                        else if(month == 7)
+                        {
+                            monthStr = "August";
+                        }
+                        else if(month == 8)
+                        {
+                            monthStr = "September";
+                        }
+                        else if(month == 9)
+                        {
+                            monthStr = "October";
+                        }
+                        else if(month== 10)
+                        {
+                            monthStr= "November"
+                        }
+                        else{
+                            monthStr = "December";
+                        }
+                        let weekday = dateObj.getDay();
+                        let weekdayStr = "";
+                        if(weekday == 1)
+                        {
+                            weekdayStr = "Monday";
+                        }
+                        else if(weekday == 2)
+                        {
+                            weekdayStr = "Tuesday";
+                        }
+                        else if(weekday == 3)
+                        {
+                            weekdayStr = "Wednesday";
+                        }
+                        else if(weekday == 4)
+                        {
+                            weekdayStr = "Thursday";
+                        }
+                        else if(weekday == 5)
+                        {
+                            weekdayStr = "Friday";
+                        }
+                        else if(weekday == 6)
+                        {
+                            weekdayStr = "Saturday";
+                        }
+                        else{
+                            weekdayStr = "Sunday";
+                        }
+                        let year = dateObj.getFullYear();
+                        let date  = dateObj.getDate();
+                        let dateStr = date.toString();
+                        let type = "";
+                        if(dateStr.charAt(1) === '1')
+                        {
+                            type = "st"
+                        }
+                        else if(dateStr.charAt(1) === '2')
+                        {
+                            type = "nd";
+                        }
+                        else if(dateStr.charAt(1)=== '3')
+                        {
+                            type = "rd";
+                        }
+                        else
+                        {
+                            type = "th"
+                        }
+                        let hour =dateObj.getHours();
+                        let minutes = dateObj.getMinutes();
+                        let seconds = dateObj.getSeconds();
+                        minutes = checkTime(minutes);
+                        seconds = checkTime(seconds);
+                        document.getElementById("demo").innerHTML = weekdayStr+ " " + monthStr + " " + date+type+ " " +year+ " " +  hour + ":" + minutes + ":" + seconds;
+                        let clock = setTimeout(startTime,500);
+                }
+                function checkTime(i)
+                {
+                    if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+                        return i;
+                }
+               
+           
+           
+    
             });
+         
         </script>
     </head>
     <body>
@@ -48,5 +175,57 @@
               </ul>
           </div>
       </nav>
+     
+
+      <div id = "main-div">
+
+            <div id = "view-header">
+                
+                <div class="header">
+                       
+                            <div class = "socsheader">
+                                    <div class ="test">        
+                    <h2>School of Computer Science</h2>
+                        </div>
+                    </div>
+                    </div>
+            
+            </div>
+
+
+            <div id = "weather/time-header">
+               
+                <div class ="header">
+                <div class ="test">
+                <div class ="timeandweather">
+                <div class = "test1"> 
+                <h3> Weather and Time</h3>
+               <div class ="test3">
+                <p id = "demo"> </p>
+               </div>
+                <div id = "weather">
+                
+
+                </div>
+            
+                <div id = "time">
+                     
+                </div>
+                
+            </div>
+        </div>
+            </div>
+            </div>
+            </div>
+            <div class = "vl"> </div>
+            <div id ="content-header">
+                <div class = "headerid">
+                    <h3>Content</h3>
+                    </div>
+            </div>    
+        </div>
+
+            
+      </div>
     </body>
 </html>
