@@ -90,7 +90,8 @@
                         {
                             monthStr= "November"
                         }
-                        else{
+                        else
+                        {
                             monthStr = "December";
                         }
                         let weekday = dateObj.getDay();
@@ -143,11 +144,23 @@
                             type = "th"
                         }
                         let hour =dateObj.getHours();
+                        let centralTime  = "";
+                        if(hour > 12 && hour<= 24)
+                        {
+                            hour = hour -12;
+                            centralTime = "PM";
+                            //hour = hour + centralTime;
+                        }
+                        else
+                        {
+                            centralTime = "AM";
+                            //hour = hour + centralTime;
+                        }
                         let minutes = dateObj.getMinutes();
                         let seconds = dateObj.getSeconds();
                         minutes = checkTime(minutes);
                         seconds = checkTime(seconds);
-                        document.getElementById("demo").innerHTML = weekdayStr+ " " + monthStr + " " + date+type+ " " +year+ " " +  hour + ":" + minutes + ":" + seconds;
+                        document.getElementById("demo").innerHTML = weekdayStr+ " " + monthStr + " " + date+type+ " " +year+ " " +  hour + ":" + minutes + ":" + seconds + "" + centralTime;
                         let clock = setTimeout(startTime,500);
                 }
                 function checkTime(i)
@@ -175,9 +188,20 @@
               </ul>
           </div>
       </nav>
-     
+    <div class ="grid-layout">
+      <div class ="item1">
 
-      <div id = "main-div">
+        <h2>SCHOOL OF</h2>
+        <h2>COMPUTER SCIENCE</h2>
+      </div>
+      <div class = "item2">
+           <h3 id = "demo"></h3>
+        </div>
+        <div class = "item3">
+            <p>Content</p>
+        </div>
+    </div>
+      <!---<div id = "main-div">
 
             <div id = "view-header">
                 
@@ -226,6 +250,6 @@
         </div>
 
             
-      </div>
+      </div>--->
     </body>
 </html>

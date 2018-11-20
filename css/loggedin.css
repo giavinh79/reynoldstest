@@ -11,7 +11,78 @@ ul.navbar-nav li:nth-child(5) {
     margin-left: auto;
     float: right;
 }
-.socsheader {
+.item1{
+    grid-area:header;
+}
+.item2{
+    grid-area:menu;
+}
+.item3{
+    grid-area:main;
+}
+.grid-layout{
+
+    display: grid;
+    grid-template-areas:
+       'header main main main main'
+       'header main main main main'
+       'header main main main main'
+       'header main main main main'
+       'header main main main main'
+       'header main main main main'
+       'header main main main main'
+       'header main main main main'
+       'header main main main main'
+       'header main main main main'
+       'header main main main main'
+       'header main main main main'
+       'header main main main main'
+       'header main main main main'
+       'header main main main main'
+       'header main main main main'
+       'header main main main main'
+       'header main main main main'
+       'menu main main main main'
+       'menu main main main main'
+       'menu main main main main'
+       'menu main main main main'
+       'menu main main main main'
+       'menu main main main main'
+       'menu main main main main'
+       'menu main main main main'
+       'menu main main main main'
+       'menu main main main main'
+       'menu main main main main'
+       'menu main main main main'
+       'menu main main main main'
+       'menu main main main main'
+       'menu main main main main'
+       'menu main main main main'
+       'menu main main main main'
+       'menu main main main main'
+       'menu main main main main'
+       'menu main main main main'
+       'menu main main main main'
+       'menu main main main main'
+       'menu main main main main'
+       'menu main main main main'
+       'menu main main main main'
+       'menu main main main main'
+       'menu main main main main'
+       'menu main main main main';
+       
+    grid-gap: 10px;
+    /*background-color: #2196F3;*/
+    padding: 10px;
+}
+.grid-layout > div {
+    background-color: rgb(226, 226, 226);
+    text-align: center;
+    padding: 20px 0;
+    font-size: 30px;
+    border: 4px solid rgba(0, 0, 0, 0.8);
+  }
+/*.socsheader {
     position: absolute;
     left: 100px;
     top: 80px;
@@ -44,7 +115,7 @@ ul.navbar-nav li:nth-child(5) {
 
 }
 .test {
-    /*font-family: consolas;*/
+
   
     font-family: consolas;
    
@@ -71,7 +142,7 @@ ul.navbar-nav li:nth-child(5) {
     margin-left: -3px;
     top: 100;
 }
-/* #logout {
+ #logout {
     margin-left: auto;
     float: right;
 } */
