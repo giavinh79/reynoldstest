@@ -72,7 +72,7 @@ app.post('/login', function(req, res) {
                     httpOnly: true, // true: The cookie only accessible by the web server
                     signed: true // Signed: Cookie has a signature to show if user manually changed it
                 }
-                res.cookie('activeUser', result[0].verificationCode, cookieOptions);
+                res.cookie('activeUser', result[0].user, cookieOptions);
                 fs.readFile(__dirname + '/loggedin.html', 'utf8', (err, data) => {
                     if (err) throw err;
                     var html = mustache.to_html(data, account); //template system used to generate dynamic HTML
@@ -184,6 +184,31 @@ app.post('/verifyuser', function(req, res) {
     else
     {
         res.end('{"success" : "Valid User", "status" : 200}');
+    }
+});
+
+app.post('/settingUser', function(req, res) {
+    if (req.signedCookies.activeUser == null) {
+      res.end('{"error" : "Invalid User", "status" : 401}');
+    } else {
+      MongoClient.connect(url, function(err, db) {
+        var dbo = db.db("reynoldsdb");
+        var query = { user: req.signedCookies.activeUser };
+        dbo.collection("accounts").find(query).toArray(function(err, result) {
+          if (err) throw err;
+          if (result == null || result == "") {
+            //nothing
+          } else {
+              var admin = {
+                super: result[0].super,
+                name: result[0].lastName + ", "+ result[0].firstName,
+                email: result[0].user
+              };
+              res.end('{"success" : "Valid User", "status" : 200, "user": ' + JSON.stringify(admin) + ' }');
+          }
+          db.close();
+        });
+      });
     }
 });
 

@@ -13,6 +13,41 @@
 
         <link rel="stylesheet" href="css/settings.css">
         <script>
+            var user;
+
+            function updateUser() {
+              //Display Unique User Info
+              if (user) {
+                superControls = document.getElementById('userEmail');
+                superControls.value = user.email;
+
+                if (user.super === 1) {
+                  superControls = document.getElementById('superControls');
+                  superControls.style.display = "block";
+                }
+
+              }
+            }
+
+            $.ajax({ //Verifies whether client is a logged in user, if not, returns to homepage
+                type: 'POST',
+                url: 'http://localhost:8080/settingUser',
+                dataType: "json",
+                success: function (data) {
+                    if (data.status != 200) {
+                        window.location.replace("/");
+                    } else {
+                      user = data.user;
+                      updateUser();
+                    }
+                },
+                error: function (xhr, status, error) {
+                    window.location.replace("/");
+                }
+            });
+
+
+
             window.history.pushState("", "", '/');
             $(document).ready(function() {
               //Add Admin Confirmation/Error message
@@ -21,6 +56,7 @@
                 message.style.display = "block";
                 message.innerHTML = '{{message}}';
               }
+
               //Admin Tbale Setup
               if ('{{admins}}'.charAt(0) != '{') {
                 var obj, data, myObj, x, txt = "";
@@ -39,9 +75,6 @@
                 document.getElementById("adminTable").innerHTML = txt;
                 //Delete Admin Confirmation message
                 if ('{{messageDel}}'.charAt(0) != '{') {
-                  //messageDel = document.getElementById('verifyMessageDel');
-                  //messageDel.style.display = "block";
-                  //messageDel.innerHTML = '{{messageDel}}';
                   document.getElementById('verifyMessageDel').innerHTML = '{{messageDel}}';
                 }
               }
@@ -60,26 +93,48 @@
               </ul>
           </div>
       </nav>
-      <h3>Settings</h3>
-      <div class="addAdmin">
-        <h3>Permissions</h3>
-        <form id="emailForm" action="email" method="post">
+      <h2>Settings</h2>
+      <div class="settingsSection">
+        <h3>Account</h3>
+        <form id="changeEmailForm">
           <div class="input-group">
             <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-            <input id="email" type="text" class="form-control" name="email" placeholder="Email" required>
+            <input id="userEmail" type="text" class="form-control" name="email" readonly="readonly">
           </div>
-          <button type="submit" class="btn btn-primary" style="min-width: 300px;">Add Admin</button>
-          <p id ="verifyMessage" style="color: green;"></p>
+          <button type="submit" class="btn btn-primary" style="min-width: 300px;">Change Email</button>
+          <p id ="verifyMessageEmail" style="color: green;"></p>
+        </form>
+        <form id="changePassForm">
+          <div class="input-group">
+            <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+            <input id="email" type="text" class="form-control" name="email" value="********" readonly="readonly">
+          </div>
+          <button type="submit" class="btn btn-primary" style="min-width: 300px;">Change Password</button>
+          <p id ="verifyMessagePass" style="color: green;"></p>
         </form>
       </div>
 
-      <div style="padding: 10px">
-        <h3>Admins</h3>
-        <form id="AdminForm" action="admins" method="post">
-          <button type="submit" class="btn btn-primary" style="min-width: 300px;">View Admins</button>
-        </form>
-        <p id ="verifyMessageDel" style="color: green;"></p>
-        <p id="adminTable"></p>
+      <div id="superControls" style="display: none;">
+        <div class="settingsSection">
+          <h3>Permissions</h3>
+          <form id="emailForm" action="email" method="post">
+            <div class="input-group">
+              <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+              <input id="email" type="text" class="form-control" name="email" placeholder="Email" required>
+            </div>
+            <button type="submit" class="btn btn-primary" style="min-width: 300px;">Add Admin</button>
+            <p id ="verifyMessage" style="color: green;"></p>
+          </form>
+        </div>
+
+        <div class="settingsSection">
+          <h4>Admins</h4>
+          <form id="AdminForm" action="admins" method="post">
+            <button type="submit" class="btn btn-primary" style="min-width: 300px;">View Admins</button>
+          </form>
+          <p id ="verifyMessageDel" style="color: green;"></p>
+          <p id="adminTable"></p>
+        </div>
       </div>
     </body>
 </html>
