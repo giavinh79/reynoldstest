@@ -26,3 +26,9 @@ ul.navbar-nav li:nth-child(5) {
   max-width: 60rem;
   padding: 10px;
 }
+
+.btnDelete {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}

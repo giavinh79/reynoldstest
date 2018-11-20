@@ -303,9 +303,46 @@ app.post('/admins', function(req, res) {
             };
             listOfAdmins.push(admin);
         }
-        console.log(listOfAdmins);
         var admins = {
-            admins: listOfAdmins
+            admins: JSON.stringify(listOfAdmins)
+        };
+        fs.readFile(__dirname + '/settings.html', 'utf8', (err, data) => {
+            if (err) throw err;
+            var html = mustache.to_html(data, admins);
+            res.send(html);
+        });
+      }
+      db.close();
+    });
+  });
+});
+
+app.post('/deleteAdmin', function(req, res) {
+  var listOfAdmins = [];
+  MongoClient.connect(url, function(err, db) {
+    var dbo = db.db("reynoldsdb");
+    var query = { user: req.body.email };
+    dbo.collection("accounts").deleteOne(query, function(err, obj) {
+      if (err) throw err;
+      console.log("Admin: " + req.body.email + ", deleted");
+      db.close();
+    });
+    dbo.collection("accounts").find({}).toArray(function(err, result) {
+      if (err) throw err;
+      if (result == null || result == "") {
+        //nothing
+      } else {
+        for (var i = 0; i < result.length; i++) {
+            var admin = {
+              role: (result[i].super === 1) ? 'Super Admin' : 'Admin',
+              name: result[i].lastName + ", "+ result[i].firstName,
+              email:result[i].user
+            };
+            listOfAdmins.push(admin);
+        }
+        var admins = {
+            admins: JSON.stringify(listOfAdmins),
+            messageDel: "Admin Successfully Deleted"
         };
         fs.readFile(__dirname + '/settings.html', 'utf8', (err, data) => {
             if (err) throw err;
