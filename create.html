@@ -30,7 +30,7 @@
 
                 if (mm < 10) {
                     mm = '0' + mm;
-                } 
+                }
 
                 today = yyyy + '-' + mm + '-' + dd;
                 $('#datePicker').attr("value", today);
@@ -47,9 +47,18 @@
             });
 
             function uploadFile() {
-                console.log('hi');
-                myDropzone.processQueue();
-                return true;
+                var count = myDropzone.files.length;
+                if (count > 0)
+                {
+                    myDropzone.processQueue();
+                    return true;
+                }
+                else
+                {
+                    alert('Must upload a file!');
+                    return false;
+                }
+
             }
         </script>
     </head>
@@ -67,20 +76,19 @@
         </nav>
 
         <div class="createWrapper">
-            <!-- upon successful registration, change verification code flag to false (unavailable) -->
-            <form id="signupForm" onsubmit="return checkPass()" action="registerAccount" method="post">
+            <form id="signupForm" onsubmit="return uploadFile()" action="registerAccount" method="post">
                 <div class="form-group">
                     <label for="inputTitle">Title</label>
-                    <input type="text" class="form-control" id="inputTitle" name="inputTitle">
+                    <input type="text" class="form-control" id="inputTitle" name="inputTitle" required>
                 </div>
                 <div class="form-group" style="display: flex;">
                     <div style="flex: 1; padding-right: 2rem;">
                         <label for="start">Start Date</label><br>
-                        <input id="datePicker" type='date' class="form-control" />
+                        <input id="datePicker" name="inputDate" type='date' class="form-control" required />
                     </div>
                     <div style="flex: 4;">
                         <label for="inputDuration">Duration</label>
-                        <input type="number" min="1" max="5" class="form-control" id="inputDuration" name="inputDuration" placeholder="Designate number of weeks content will display" required>
+                        <input type="number" min="1" max="5" class="form-control" id="inputDuration" name="inputDuration" placeholder="Designate number of weeks content will display for" required>
                     </div>
                 </div>
                 <div>
@@ -91,7 +99,7 @@
 
             <br>
             <form action="file-upload" class="dropzone" method="post" id="uploadForm"></form>
-            <button onclick="uploadFile()" class="btn btn-primary">Submit files</button>
+            <!-- <button onclick="uploadFile()" class="btn btn-primary">Submit files</button> -->
         </div>
     </body>
 </html>

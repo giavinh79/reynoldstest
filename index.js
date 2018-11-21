@@ -150,31 +150,62 @@ app.post('/signup', function(req, res) {
 });
 
 app.post('/registerAccount', function(req, res) {
-    console.log(req.body.inputEmail);
+    var error = false;
+    if (req.body.inputEmail == null || req.body.inputPassword1 == null || req.body.firstName == null)
+    {
+        error = true;
+    }
+
+    function doneCreate() {
+        if (error)
+        {
+            console.log("tf")
+            res.redirect('/');
+            res.status(404).end();
+        }
+        else
+        {
+            createAccount();
+            console.log("howtf")
+    
+            var success = {
+              messageTwo: "Account successfully created."
+            };
+  
+            fs.readFile(__dirname + '/index.html', 'utf8', (err, data) => {
+                if (err) throw err;
+                var html = mustache.to_html(data, success);
+                res.send(html);
+            });
+         }
+    }
+
     MongoClient.connect(url, { useNewUrlParser: true }, function(err, db) {
         if (err) throw err;
+       
         var dbo = db.db("reynoldsdb");
-        var myobj = { user: req.body.inputEmail, pass: req.body.inputPassword1, firstName: req.body.firstName, lastName: req.body.lastName, super: 0, verificationCode: req.body.inputCode};
-        dbo.collection("accounts").insertOne(myobj, function(err, res) 
-        {
-            if (err) throw err;
-            if (!err) console.log("Account successfully created.");
-        });
-        var success = {
-            messageTwo: "Account successfully created."
-        };
 
         var query = { code: req.body.inputCode };
         var newvalues = { $set: {active: "f" } };
         dbo.collection("verificationCodes").updateOne(query, newvalues, function(err, res) {
-            if (err) throw err;
+            if (err) return;
+            if (res.matchedCount == 0)
+            {
+                console.log("Invalid verification code inputted during account creation.");
+                error = true;
+                doneCreate();
+            }
         });
-        fs.readFile(__dirname + '/index.html', 'utf8', (err, data) => {
-            if (err) throw err;
-            var html = mustache.to_html(data, success);
+
+        function createAccount() {
+            var myobj = { user: req.body.inputEmail, pass: req.body.inputPassword1, firstName: req.body.firstName, lastName: req.body.lastName, super: 0, verificationCode: req.body.inputCode};
+            dbo.collection("accounts").insertOne(myobj, function(err, res) 
+            {
+                if (err) throw err;
+                if (!err) console.log("Account successfully created.");
+            });
             db.close();
-            res.send(html);
-        });
+        }
       });
 });
 
@@ -189,21 +220,20 @@ app.post('/verifyuser', function(req, res) {
     }
 });
 
+app.post('/uploadContent', function(req, res) {
+    console.log(req.body.inputTitle);
+    console.log(req.body.inputDate);
+    console.log(req.body.inputDuration);
+});
+
 app.post('/file-upload', function(req, res) {
     var form = new multiparty.Form();
     form.parse(req, function(err, fields, files) {
-        // res.writeHead(200, {'content-type': 'text/plain'});
-        // res.write('received upload:\n\n');
-        // console.log(util.inspect({fields: fields, files: files}));
-        // console.log(fields);
-        // console.log(files);
-        // res.end(util.inspect({fields: fields, files: files}));
         cloudinary.config({ 
             cloud_name: 'dhwlyljdd', 
             api_key: '751525171794449', 
             api_secret: 'NHBYucD3tJPm6AOPRa0ZAeptoKc' 
         });
-        console.log("whytf");
         cloudinary.v2.uploader.upload(files.file[0].path, 
         function(error, result) {console.log(result, error)});
       });
