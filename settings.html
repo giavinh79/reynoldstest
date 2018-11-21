@@ -20,6 +20,10 @@
               if (user) {
                 superControls = document.getElementById('userEmail');
                 superControls.value = user.email;
+                superControls = document.getElementById('userEmail2');
+                superControls.value = user.email;
+                superControls = document.getElementById('userName');
+                superControls.value = user.name;
 
                 if (user.super === 1) {
                   superControls = document.getElementById('superControls');
@@ -31,7 +35,7 @@
 
             $.ajax({ //Verifies whether client is a logged in user, if not, returns to homepage
                 type: 'POST',
-                url: 'http://localhost:8080/settingUser',
+                url: 'http://localhost:8080/settingsForUser',
                 dataType: "json",
                 success: function (data) {
                     if (data.status != 200) {
@@ -55,6 +59,20 @@
                 message = document.getElementById('verifyMessage');
                 message.style.display = "block";
                 message.innerHTML = '{{message}}';
+              }
+
+              //Change Email Confirmation Email
+              if ('{{messageEmail}}'.charAt(0) != '{') {
+                message = document.getElementById('verifyMessageEmail');
+                message.style.display = "block";
+                message.innerHTML = '{{messageEmail}}';
+              }
+
+              //Change Password Confirmation Email
+              if ('{{messagePass}}'.charAt(0) != '{') {
+                message = document.getElementById('verifyMessagePass');
+                message.style.display = "block";
+                message.innerHTML = '{{messagePass}}';
               }
 
               //Admin Tbale Setup
@@ -96,28 +114,35 @@
       <h2>Settings</h2>
       <div class="settingsSection">
         <h3>Account</h3>
-        <form id="changeEmailForm">
+        <form id="nameForm" style="display: flex;">
           <div class="input-group">
-            <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+            <span class="input-group-addon"><i class="glyphicon glyphicon-user">Name</i></span>
+            <input id="userName" type="text" class="form-control" readonly="readonly">
+          </div>
+        </form>
+        <form id="changeEmailForm" action="changeEmail" method="post" style="display: flex;">
+          <div class="input-group">
+            <span class="input-group-addon"><i class="glyphicon glyphicon-user">Email</i></span>
             <input id="userEmail" type="text" class="form-control" name="email" readonly="readonly">
           </div>
-          <button type="submit" class="btn btn-primary" style="min-width: 300px;">Change Email</button>
-          <p id ="verifyMessageEmail" style="color: green;"></p>
+          <button type="submit" class="btn btn-primary" style="margin: 10px; min-width: 150px;">Change Email</button>
+          <p id ="verifyMessageEmail" style="color: green; margin: 15px;"></p>
         </form>
-        <form id="changePassForm">
+        <form id="changePassForm" action="changePassword" method="post" style="display: flex;">
           <div class="input-group">
-            <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-            <input id="email" type="text" class="form-control" name="email" value="********" readonly="readonly">
+            <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i>Password</span>
+            <input id="userEmail2" type="text" class="form-control" name="email" style="display:none;">
+            <input id="email" type="text" class="form-control" value="************" readonly="readonly">
           </div>
-          <button type="submit" class="btn btn-primary" style="min-width: 300px;">Change Password</button>
-          <p id ="verifyMessagePass" style="color: green;"></p>
+          <button type="submit" class="btn btn-primary" style="margin: 10px; min-width: 150px;">Change Password</button>
+          <p id ="verifyMessagePass" style="color: green; margin: 15px;"></p>
         </form>
       </div>
 
       <div id="superControls" style="display: none;">
         <div class="settingsSection">
           <h3>Permissions</h3>
-          <form id="emailForm" action="email" method="post">
+          <form id="emailForm" action="emailAdminInvite" method="post">
             <div class="input-group">
               <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
               <input id="email" type="text" class="form-control" name="email" placeholder="Email" required>

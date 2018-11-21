@@ -72,7 +72,7 @@ app.post('/login', function(req, res) {
                     httpOnly: true, // true: The cookie only accessible by the web server
                     signed: true // Signed: Cookie has a signature to show if user manually changed it
                 }
-                res.cookie('activeUser', result[0].user, cookieOptions);
+                res.cookie('activeUser', result[0].verificationCode, cookieOptions);
                 fs.readFile(__dirname + '/loggedin.html', 'utf8', (err, data) => {
                     if (err) throw err;
                     var html = mustache.to_html(data, account); //template system used to generate dynamic HTML
@@ -187,13 +187,13 @@ app.post('/verifyuser', function(req, res) {
     }
 });
 
-app.post('/settingUser', function(req, res) {
+app.post('/settingsForUser', function(req, res) {
     if (req.signedCookies.activeUser == null) {
       res.end('{"error" : "Invalid User", "status" : 401}');
     } else {
       MongoClient.connect(url, function(err, db) {
         var dbo = db.db("reynoldsdb");
-        var query = { user: req.signedCookies.activeUser };
+        var query = { verificationCode: req.signedCookies.activeUser };
         dbo.collection("accounts").find(query).toArray(function(err, result) {
           if (err) throw err;
           if (result == null || result == "") {
@@ -212,7 +212,7 @@ app.post('/settingUser', function(req, res) {
     }
 });
 
-app.post('/email', function(req, res) {
+app.post('/emailAdminInvite', function(req, res) {
 
   var VarCode;
 
@@ -239,7 +239,7 @@ app.post('/email', function(req, res) {
     }));
 
     const data = {
-      from: 'blessstylesocs@gmail.com',
+      from: 'Reynolds SOCS Board <blessstylesocs@gmail.com>',
       to: req.body.email,
       subject: 'Admin Invitation',
       html: '<p>'+ message + '</p>'
@@ -376,9 +376,90 @@ app.post('/deleteAdmin', function(req, res) {
         });
       }
       db.close();
+      });
     });
   });
-});
+
+  app.post('/changeEmail', function(req, res) {
+    var account = {
+        userEmail: req.body.email
+    };
+    fs.readFile(__dirname + '/changeEmail.html', 'utf8', (err, data) => {
+        if (err) throw err;
+        var html = mustache.to_html(data, account);
+        res.send(html);
+    });
+  });
+
+  app.post('/changePassword', function(req, res) {
+    var account = {
+        userEmail: req.body.email
+    };
+    fs.readFile(__dirname + '/changePassword.html', 'utf8', (err, data) => {
+        if (err) throw err;
+        var html = mustache.to_html(data, account);
+        res.send(html);
+    });
+  });
+
+  app.post('/updateAccount', function(req, res) {
+    MongoClient.connect(url, function(err, db) {
+      var dbo = db.db("reynoldsdb");
+      var query = { user: req.body.email };
+      var updating = "nothing";
+      var newvalues;
+
+      function updateAccount() {
+        dbo.collection("accounts").updateOne(query, newvalues, function(err, response) {
+          if (err) throw err;
+          if(updating === "user") {
+            console.log("Email Updated");
+            var messageEmail = {
+                messageEmail: "Email has been updated"
+            };
+          } else if(updating === "pass") {
+            console.log("Password Updated");
+            var messagePass = {
+                messagePass: "Password has been updated"
+            };
+          }
+          fs.readFile(__dirname + '/settings.html', 'utf8', (err, data) => {
+              if (err) throw err;
+              var html = mustache.to_html(data, (updating === "user") ? messageEmail : messagePass);
+              res.send(html);
+          });
+          db.close();
+        });
+      }
+
+      if (req.body.newEmail1) {
+        //Check if Email is being used by another account
+          var query2 = { user: req.body.newEmail1 };
+          dbo.collection("accounts").find(query2).toArray(function(err, result) {
+            if (err) throw err;
+            if (result == null || result == "") {
+              updating = "user";
+              newvalues = { $set: {user: req.body.newEmail1} };
+              updateAccount();
+            } else {
+              console.log("Email Aready Exists");
+              var messageEmail = {
+                  messageEmail: "That email is being used by another account"
+              };
+              fs.readFile(__dirname + '/settings.html', 'utf8', (err, data) => {
+                  if (err) throw err;
+                  var html = mustache.to_html(data, messageEmail);
+                  res.send(html);
+              });
+            }
+          });
+      } else if(req.body.newPassword1){
+        updating = "pass";
+        newvalues = { $set: {pass: req.body.newPassword1} };
+        updateAccount();
+      }
+    });
+  });
 
 http.listen(PORT, function(){
     console.log('listening on localhost:8080');
