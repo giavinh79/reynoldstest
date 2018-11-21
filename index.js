@@ -150,6 +150,7 @@ app.post('/signup', function(req, res) {
 });
 
 app.post('/registerAccount', function(req, res) {
+    console.log(req.body.inputEmail);
     MongoClient.connect(url, { useNewUrlParser: true }, function(err, db) {
         if (err) throw err;
         var dbo = db.db("reynoldsdb");

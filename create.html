@@ -15,6 +15,7 @@
 
         <link rel="stylesheet" href="css/create.css">
         <script>
+            var myDropzone;
             Dropzone.autoDiscover = false;
             $(document).ready(function() {
                 // $("#my-awesome-dropzone").dropzone();
@@ -35,8 +36,8 @@
                 $('#datePicker').attr("value", today);
                 $('#datePicker').attr("min", today);
 
-                $("#uploadForm").dropzone({
-                    url: "/file-upload",
+                myDropzone = new Dropzone("#uploadForm", {
+                    url: "file-upload",
                     maxFilesize:10, // MB
                     autoProcessQueue: false,
                     maxFiles: 1,
@@ -44,6 +45,12 @@
                     enqueueForUpload: true
                 });
             });
+
+            function uploadFile() {
+                console.log('hi');
+                myDropzone.processQueue();
+                return true;
+            }
         </script>
     </head>
     <body>
@@ -83,7 +90,8 @@
             </form>
 
             <br>
-            <form action="" class="dropzone" method="post" id="uploadForm"></form>
+            <form action="file-upload" class="dropzone" method="post" id="uploadForm"></form>
+            <button onclick="uploadFile()" class="btn btn-primary">Submit files</button>
         </div>
     </body>
 </html>
