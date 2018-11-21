@@ -4,7 +4,7 @@ html, body {
 }
 
 .createWrapper {
-    padding: 5% 5%;
+    padding: 2% 5%;
 }
 
 input[type=date]::-webkit-inner-spin-button {
@@ -25,4 +25,8 @@ ul.navbar-nav {
 ul.navbar-nav li:nth-child(5) {
     margin-left: auto;
     float: right;
+}
+
+.createWrapper {
+    width: 50%;
 }

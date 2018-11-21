@@ -73,14 +73,16 @@ h1 {
 .footer {
   display: flex;
   height: 5rem;
-  background-color: rgb(84, 130, 158);
   align-items: center;
   justify-content: center;
+  background-color: #353d48;
+  color: white;
 }
 
-/* .footer img {
-  height: 100%;
-} */
+.footer a {
+  text-decoration: none;
+  color: white;
+}
 
 .header {
   height: 5rem;

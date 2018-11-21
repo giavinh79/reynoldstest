@@ -5,6 +5,8 @@ const fs = require('fs'); // bring in the file system api
 const mustache = require('mustache'); //{{}}
 const MongoClient = require('mongodb').MongoClient;
 const cloudinary = require('cloudinary');
+const multiparty = require('multiparty');
+const util = require('util');
 app.use(cookieParser("375025"));
 app.use(function(req, res, next) { //CORS
     res.header('Access-Control-Allow-Origin', "*");
@@ -187,16 +189,24 @@ app.post('/verifyuser', function(req, res) {
 });
 
 app.post('/file-upload', function(req, res) {
-    // req.file
-    // console.log(req);
-    // cloudinary.config({ 
-    //     cloud_name: 'dhwlyljdd', 
-    //     api_key: '751525171794449', 
-    //     api_secret: 'NHBYucD3tJPm6AOPRa0ZAeptoKc' 
-    //   });
-
-    // cloudinary.v2.uploader.upload("my_picture.jpg", 
-    // function(error, result) {console.log(result, error)});
+    var form = new multiparty.Form();
+    form.parse(req, function(err, fields, files) {
+        // res.writeHead(200, {'content-type': 'text/plain'});
+        // res.write('received upload:\n\n');
+        // console.log(util.inspect({fields: fields, files: files}));
+        // console.log(fields);
+        // console.log(files);
+        // res.end(util.inspect({fields: fields, files: files}));
+        cloudinary.config({ 
+            cloud_name: 'dhwlyljdd', 
+            api_key: '751525171794449', 
+            api_secret: 'NHBYucD3tJPm6AOPRa0ZAeptoKc' 
+        });
+        console.log("whytf");
+        cloudinary.v2.uploader.upload(files.file[0].path, 
+        function(error, result) {console.log(result, error)});
+      });
+      return;
 });
 
 http.listen(PORT, function(){
