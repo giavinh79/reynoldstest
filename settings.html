@@ -4,6 +4,8 @@
         <meta charset="utf-8">
         <title>Reynold's Welcome</title>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <link href="https://fonts.googleapis.com/css?family=Montserrat:200,300,400,700,900" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -11,13 +13,88 @@
 
         <link rel="stylesheet" href="css/settings.css">
         <script>
+            var user;
+
+            function updateUser() {
+              //Display Unique User Info
+              if (user) {
+                superControls = document.getElementById('userEmail');
+                superControls.value = user.email;
+                superControls = document.getElementById('userEmail2');
+                superControls.value = user.email;
+                superControls = document.getElementById('userName');
+                superControls.value = user.name;
+
+                if (user.super === 1) {
+                  superControls = document.getElementById('superControls');
+                  superControls.style.display = "block";
+                }
+
+              }
+            }
+
+            $.ajax({ //Verifies whether client is a logged in user, if not, returns to homepage
+                type: 'POST',
+                url: 'http://localhost:8080/settingsForUser',
+                dataType: "json",
+                success: function (data) {
+                    if (data.status != 200) {
+                        window.location.replace("/");
+                    } else {
+                      user = data.user;
+                      updateUser();
+                    }
+                },
+                error: function (xhr, status, error) {
+                    window.location.replace("/");
+                }
+            });
+
+
+
             window.history.pushState("", "", '/');
             $(document).ready(function() {
-              if ('{{message}}'.charAt(0) != '{')
-              {
+              //Add Admin Confirmation/Error message
+              if ('{{message}}'.charAt(0) != '{') {
                 message = document.getElementById('verifyMessage');
                 message.style.display = "block";
                 message.innerHTML = '{{message}}';
+              }
+
+              //Change Email Confirmation Email
+              if ('{{messageEmail}}'.charAt(0) != '{') {
+                message = document.getElementById('verifyMessageEmail');
+                message.style.display = "block";
+                message.innerHTML = '{{messageEmail}}';
+              }
+
+              //Change Password Confirmation Email
+              if ('{{messagePass}}'.charAt(0) != '{') {
+                message = document.getElementById('verifyMessagePass');
+                message.style.display = "block";
+                message.innerHTML = '{{messagePass}}';
+              }
+
+              //Admin Tbale Setup
+              if ('{{admins}}'.charAt(0) != '{') {
+                var obj, data, myObj, x, txt = "";
+                data = "{{admins}}";
+                myObj = JSON.parse(data.replace(/&quot;/g,'"'));
+                txt += "<table class=\"adminTable table table-striped\"><thead><tr><th scope=\"col\">Role</th><th scope=\"col\">Name</th><th scope=\"col\">Email</th><th scope=\"col\">Delete</th></tr></thead><tbody>"
+                for (x in myObj) {
+                    txt += "<tr><td>" + myObj[x].role + "</td><td>" + myObj[x].name + "</td><td>" + myObj[x].email + "</td>";
+                    if (myObj[x].role === "Admin") {
+                      txt += "<td>" + "<form id=\"deleteForm\" action=\"deleteAdmin\" method=\"post\">" + "<input style=\"display: none;\" id=\"email\" name=\"email\" value=\"" + myObj[x].email + "\"></input>" + "<button class=\"btnDelete\" type=\"submit\"><i class=\"fa fa-ban\" style=\"font-size:24px; color: red;\"></i></button></form></td></tr>"
+                    } else {
+                      txt += "<td></td></tr>"
+                    }
+                }
+                txt += "</tbody></table>";
+                document.getElementById("adminTable").innerHTML = txt;
+                //Delete Admin Confirmation message
+                if ('{{messageDel}}'.charAt(0) != '{') {
+                  document.getElementById('verifyMessageDel').innerHTML = '{{messageDel}}';
+                }
               }
             });
         </script>
@@ -26,24 +103,63 @@
       <nav class="navbar navbar-default">
           <div class="container-fluid">
               <ul class="nav navbar-nav">
-                <li><a href="#View">View</a></li>
-                <li><a href="#Create">Create</a></li>
-                <li><a href="#Edit">Edit/Delete</a></li>
+                <li><a href="loggedin.html">View</a></li>
+                <li><a href="create.html">Create</a></li>
+                <li><a href="edit.html">Edit</a></li>
                 <li class="active"><a href="settings.html">Settings</a></li>
                 <li id="logout"><a href="#">Logout</a></li>
               </ul>
           </div>
       </nav>
-      <h3>Settings</h3>
-      <div class="addAdmin">
-        <form id="emailForm" action="email" method="post">
+      <h2>Settings</h2>
+      <div class="settingsSection">
+        <h3>Account</h3>
+        <form id="nameForm" style="display: flex;">
           <div class="input-group">
-            <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-            <input id="email" type="text" class="form-control" name="email" placeholder="Email" required>
+            <span class="input-group-addon"><i class="glyphicon glyphicon-user">Name</i></span>
+            <input id="userName" type="text" class="form-control" readonly="readonly">
           </div>
-          <button type="submit" class="btn btn-primary" style="min-width: 300px;">Add Admin</button>
-          <p id ="verifyMessage" style="color: green;"></p>
         </form>
+        <form id="changeEmailForm" action="changeEmail" method="post" style="display: flex;">
+          <div class="input-group">
+            <span class="input-group-addon"><i class="glyphicon glyphicon-user">Email</i></span>
+            <input id="userEmail" type="text" class="form-control" name="email" readonly="readonly">
+          </div>
+          <button type="submit" class="btn btn-primary" style="margin: 10px; min-width: 150px;">Change Email</button>
+          <p id ="verifyMessageEmail" style="color: green; margin: 15px;"></p>
+        </form>
+        <form id="changePassForm" action="changePassword" method="post" style="display: flex;">
+          <div class="input-group">
+            <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i>Password</span>
+            <input id="userEmail2" type="text" class="form-control" name="email" style="display:none;">
+            <input id="email" type="text" class="form-control" value="************" readonly="readonly">
+          </div>
+          <button type="submit" class="btn btn-primary" style="margin: 10px; min-width: 150px;">Change Password</button>
+          <p id ="verifyMessagePass" style="color: green; margin: 15px;"></p>
+        </form>
+      </div>
+
+      <div id="superControls" style="display: none;">
+        <div class="settingsSection">
+          <h3>Permissions</h3>
+          <form id="emailForm" action="emailAdminInvite" method="post">
+            <div class="input-group">
+              <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+              <input id="email" type="text" class="form-control" name="email" placeholder="Email" required>
+            </div>
+            <button type="submit" class="btn btn-primary" style="min-width: 300px;">Add Admin</button>
+            <p id ="verifyMessage" style="color: green;"></p>
+          </form>
+        </div>
+
+        <div class="settingsSection">
+          <h4>Admins</h4>
+          <form id="AdminForm" action="admins" method="post">
+            <button type="submit" class="btn btn-primary" style="min-width: 300px;">View Admins</button>
+          </form>
+          <p id ="verifyMessageDel" style="color: green;"></p>
+          <p id="adminTable"></p>
+        </div>
       </div>
     </body>
 </html>

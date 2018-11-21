@@ -11,22 +11,21 @@
 
         <link rel="stylesheet" href="css/loggedin.css">
         <script>
-           
-            //console.log("before");
-            // $.ajax({ Verifies whether client is a logged in user, if not, returns to homepage
-            //     type: 'POST',
-            //     url: 'http://localhost:8080/verifyuser',
-            //     dataType: "json",
-            //     success: function (data) {
-            //         if (data.status != 200)
-            //         {
-            //             window.location.replace("/");
-            //         }
-            //     },
-            //     error: function (xhr, status, error) {
-            //         window.location.replace("/");
-            //     }
-            // });
+            $.ajax({ //Verifies whether client is a logged in user, if not, returns to homepage
+                type: 'POST',
+                url: 'http://localhost:8080/verifyuser',
+                dataType: "json",
+                success: function (data) {
+                    if (data.status != 200)
+                    {
+                        window.location.replace("/");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    window.location.replace("/");
+                }
+            });
+
             window.history.pushState("", "", '/');
             $(document).ready(function() {
               if (''.charAt(0) != '{')
@@ -180,9 +179,9 @@
       <nav class="navbar navbar-default">
           <div class="container-fluid">
               <ul class="nav navbar-nav">
-                <li class="active"><a href="#View" data-toggle="tab">View</a></li>
-                <li><a href="#Create">Create</a></li>
-                <li><a href="#Edit">Edit/Delete</a></li>
+                <li class="active"><a href="#" data-toggle="tab">View</a></li>
+                <li><a href="create.html">Create</a></li>
+                <li><a href="edit.html">Edit</a></li>
                 <li><a href="settings.html">Settings</a></li>
                 <li id="logout"><a href="#">Logout</a></li>
               </ul>
@@ -210,4 +209,5 @@
 
 
     </body>
+    <h3>View</h3>
 </html>
