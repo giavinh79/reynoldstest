@@ -33,7 +33,7 @@ app
   .get('/css/dropzone.css', (req, res) => res.sendFile(__dirname + '/css/dropzone.css'))
   .get('/lib/dropzone.js', (req, res) => res.sendFile(__dirname + '/lib/dropzone.js'))
   .get('/css/loggedin.css', (req, res) => res.sendFile(__dirname + '/css/loggedin.css'))
-  .get('/res/CompanyName.png', (req, res) => res.sendFile(__dirname + '/res/CompanyName.png'));
+  .get('/res/CompanyName.png', (req, res) => res.sendFile(__dirname + '/res/CompanyName.png'))
   .get('/loggedin.html', (req, res) => res.sendFile(__dirname + '/loggedin.html'))
   .get('/settings.html', (req, res) => res.sendFile(__dirname + '/settings.html'))
   .get('/css/settings.css', (req, res) => res.sendFile(__dirname + '/css/settings.css'))
