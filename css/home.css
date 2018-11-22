@@ -71,6 +71,24 @@ h1 {
 }
 
 .footer {
-  height: 7rem;
-  background-color: #666;
+  display: flex;
+  height: 5rem;
+  align-items: center;
+  justify-content: center;
+  background-color: #353d48;
+  color: white;
+}
+
+.footer a {
+  text-decoration: none;
+  color: white;
+}
+
+.header {
+  height: 5rem;
+  background-color: rgb(84, 130, 158);
+}
+
+.header img {
+  height: 100%;
 }

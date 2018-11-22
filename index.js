@@ -5,6 +5,14 @@ const fs = require('fs'); // bring in the file system api
 const mustache = require('mustache'); //{{}}
 const MongoClient = require('mongodb').MongoClient;
 const nodemailer = require('nodemailer');
+const cloudinary = require('cloudinary');
+const multiparty = require('multiparty');
+
+cloudinary.config({ 
+    cloud_name: 'dhwlyljdd', 
+    api_key: '751525171794449', 
+    api_secret: 'NHBYucD3tJPm6AOPRa0ZAeptoKc' 
+});
 
 app.use(cookieParser("375025"));
 app.use(function(req, res, next) { //CORS
@@ -19,8 +27,13 @@ const PORT = process.env.PORT || 8080;
 
 app
   .get('/', (req, res) => res.sendFile(__dirname + '/index.html'))
+  .get('/create.html', (req, res) => res.sendFile(__dirname + '/create.html'))
   .get('/css/home.css', (req, res) => res.sendFile(__dirname + '/css/home.css'))
+  .get('/css/create.css', (req, res) => res.sendFile(__dirname + '/css/create.css'))
+  .get('/css/dropzone.css', (req, res) => res.sendFile(__dirname + '/css/dropzone.css'))
+  .get('/lib/dropzone.js', (req, res) => res.sendFile(__dirname + '/lib/dropzone.js'))
   .get('/css/loggedin.css', (req, res) => res.sendFile(__dirname + '/css/loggedin.css'))
+  .get('/res/CompanyName.png', (req, res) => res.sendFile(__dirname + '/res/CompanyName.png'))
   .get('/loggedin.html', (req, res) => res.sendFile(__dirname + '/loggedin.html'))
   .get('/settings.html', (req, res) => res.sendFile(__dirname + '/settings.html'))
   .get('/css/settings.css', (req, res) => res.sendFile(__dirname + '/css/settings.css'))
@@ -69,7 +82,7 @@ app.post('/login', function(req, res) {
 
                 var cookieOptions = {
                     maxAge: 1000 * 60 * 120, // would expire after 2 hours (120 minutes)
-                    httpOnly: true, // true: The cookie only accessible by the web server
+                    httpOnly: false, // true: The cookie only accessible by the web server
                     signed: true // Signed: Cookie has a signature to show if user manually changed it
                 }
                 res.cookie('activeUser', result[0].verificationCode, cookieOptions);
@@ -149,34 +162,66 @@ app.post('/signup', function(req, res) {
 });
 
 app.post('/registerAccount', function(req, res) {
-    MongoClient.connect(url, { useNewUrlParser: true }, function(err, db) {
-        if (err) throw err;
-        var dbo = db.db("reynoldsdb");
+    var error = false;
+    if (req.body.inputEmail == null || req.body.inputPassword1 == null || req.body.firstName == null)
+    {
+        error = true;
+    }
+
+    function createAccount() {
         var myobj = { user: req.body.inputEmail, pass: req.body.inputPassword1, firstName: req.body.firstName, lastName: req.body.lastName, super: 0, verificationCode: req.body.inputCode};
         dbo.collection("accounts").insertOne(myobj, function(err, res)
         {
             if (err) throw err;
             if (!err) console.log("Account successfully created.");
         });
-        var success = {
-            messageTwo: "Account successfully created."
-        };
+        db.close();
+    }
+
+    function doneCreate() {
+        if (error)
+        {
+            console.log("tf")
+            res.redirect('/');
+            res.status(404).end();
+        }
+        else
+        {
+            createAccount();
+            console.log("howtf")
+    
+            var success = {
+              messageTwo: "Account successfully created."
+            };
+  
+            fs.readFile(__dirname + '/index.html', 'utf8', (err, data) => {
+                if (err) throw err;
+                var html = mustache.to_html(data, success);
+                res.send(html);
+            });
+         }
+    }
+
+    MongoClient.connect(url, { useNewUrlParser: true }, function(err, db) {
+        if (err) throw err;
+        var dbo = db.db("reynoldsdb");
 
         var query = { code: req.body.inputCode };
         var newvalues = { $set: {active: "f" } };
         dbo.collection("verificationCodes").updateOne(query, newvalues, function(err, res) {
-            if (err) throw err;
+            if (err) return;
+            if (res.matchedCount == 0)
+            {
+                console.log("Invalid verification code inputted during account creation.");
+                error = true;
+                doneCreate();
+            }
         });
-        fs.readFile(__dirname + '/index.html', 'utf8', (err, data) => {
-            if (err) throw err;
-            var html = mustache.to_html(data, success);
-            db.close();
-            res.send(html);
-        });
-      });
+    });
 });
 
 app.post('/verifyuser', function(req, res) {
+    console.log(req.signedCookies);
     if (req.signedCookies.activeUser == null)
     {
         res.end('{"error" : "Invalid User", "status" : 401}');
@@ -185,6 +230,62 @@ app.post('/verifyuser', function(req, res) {
     {
         res.end('{"success" : "Valid User", "status" : 200}');
     }
+});
+
+app.post('/uploadContent', function(req, res) {
+    console.log(req.body.inputTitle);
+    console.log(req.body.inputDate);
+    console.log(req.body.inputDuration);
+    console.log(req.signedCookies);
+    var username= "";
+    var adminName = "";
+    MongoClient.connect(url, { useNewUrlParser: true }, function(err, db) {
+        var dbo = db.db("reynoldsdb");
+
+        function createContent()
+        {
+            var myobj = { title: req.body.inputTitle, file: req.body.inputFile, date: req.body.inputDate, duration: req.body.inputDuration, admin: username, firstName: adminName, id: null};
+            dbo.collection("content").insertOne(myobj, function(err, res) 
+            {
+                if (err) throw err;
+            });
+            console.log("let's go");
+            db.close();
+            res.redirect('/create.html')
+        }
+        console.log(req.signedCookies.activeUser);
+        var query = { verificationCode: req.signedCookies.activeUser };
+        dbo.collection("accounts").find(query).toArray(function(err, result) {
+            if (err) throw err;
+            if (result == null || result == "") {
+                console.log("why the frik");
+                var fail = {
+                    messageTwo: "Invalid verification code."
+                };
+                db.close();
+                fs.readFile(__dirname + '/index.html', 'utf8', (err, data) => {
+                    if (err) throw err;
+                    var html = mustache.to_html(data, fail);
+                    res.send(html);
+                });
+            } else {
+                username = result[0].user;
+                adminName = result[0].firstName;
+                createContent();
+            }
+        });
+    });
+});
+
+app.post('/file-upload', function(req, res) {
+    var form = new multiparty.Form();
+    form.parse(req, function(err, fields, files) {
+        console.log("hiii");
+        console.log(files.file[0].headers);
+        cloudinary.v2.uploader.upload(files.file[0].path, 
+        function(error, result) {console.log(result, error)});
+    });
+    return;
 });
 
 app.post('/settingsForUser', function(req, res) {
