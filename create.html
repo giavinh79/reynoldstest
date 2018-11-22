@@ -42,14 +42,25 @@
                     autoProcessQueue: false,
                     maxFiles: 1,
                     acceptedFiles: 'image/*',
-                    enqueueForUpload: true
+                    enqueueForUpload: true,
                 });
             });
 
             function uploadFile() {
                 var count = myDropzone.files.length;
+                var fileElement = document.getElemenyById('inputFile');
                 if (count > 0)
                 {
+                    fileElement.value = myDropzone.files[0].name;
+                    // var promise = new Promise(function(resolve, reject) {
+                    //     //async task
+                    //     if (/* everything turned out fine */) {
+                    //         resolve("Stuff worked!");
+                    //     }
+                    //     else {
+                    //         reject(Error("It broke"));
+                    //     }
+                    // });
                     myDropzone.processQueue();
                     return true;
                 }
@@ -76,7 +87,7 @@
         </nav>
 
         <div class="createWrapper">
-            <form id="signupForm" onsubmit="return uploadFile()" action="registerAccount" method="post">
+            <form id="signupForm" onsubmit="return uploadFile()" action="uploadContent" method="post">
                 <div class="form-group">
                     <label for="inputTitle">Title</label>
                     <input type="text" class="form-control" id="inputTitle" name="inputTitle" required>
@@ -91,15 +102,15 @@
                         <input type="number" min="1" max="5" class="form-control" id="inputDuration" name="inputDuration" placeholder="Designate number of weeks content will display for" required>
                     </div>
                 </div>
-                <div>
-
+                <div style="text-align: right;">
+                    <button type="submit" class="btn btn-primary" style="margin-top: 22.5rem; width: 10rem; height: 4rem; font-size: 1.6rem;">Submit</button>
                 </div>
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <div style="width: 0;">
+                    <input type="text" id="inputFile" name="inputFile" disabled />
+                </div>
             </form>
 
-            <br>
-            <form action="file-upload" class="dropzone" method="post" id="uploadForm"></form>
-            <!-- <button onclick="uploadFile()" class="btn btn-primary">Submit files</button> -->
+            <br><form action="file-upload" class="dropzone" method="post" id="uploadForm" style="margin-top: -27rem;"></form>
         </div>
     </body>
 </html>

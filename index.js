@@ -6,7 +6,14 @@ const mustache = require('mustache'); //{{}}
 const MongoClient = require('mongodb').MongoClient;
 const cloudinary = require('cloudinary');
 const multiparty = require('multiparty');
-const util = require('util');
+// const util = require('util');
+
+cloudinary.config({ 
+    cloud_name: 'dhwlyljdd', 
+    api_key: '751525171794449', 
+    api_secret: 'NHBYucD3tJPm6AOPRa0ZAeptoKc' 
+});
+
 app.use(cookieParser("375025"));
 app.use(function(req, res, next) { //CORS
     res.header('Access-Control-Allow-Origin', "*");
@@ -156,6 +163,16 @@ app.post('/registerAccount', function(req, res) {
         error = true;
     }
 
+    function createAccount() {
+        var myobj = { user: req.body.inputEmail, pass: req.body.inputPassword1, firstName: req.body.firstName, lastName: req.body.lastName, super: 0, verificationCode: req.body.inputCode};
+        dbo.collection("accounts").insertOne(myobj, function(err, res) 
+        {
+            if (err) throw err;
+            if (!err) console.log("Account successfully created.");
+        });
+        db.close();
+    }
+
     function doneCreate() {
         if (error)
         {
@@ -182,7 +199,6 @@ app.post('/registerAccount', function(req, res) {
 
     MongoClient.connect(url, { useNewUrlParser: true }, function(err, db) {
         if (err) throw err;
-       
         var dbo = db.db("reynoldsdb");
 
         var query = { code: req.body.inputCode };
@@ -196,17 +212,7 @@ app.post('/registerAccount', function(req, res) {
                 doneCreate();
             }
         });
-
-        function createAccount() {
-            var myobj = { user: req.body.inputEmail, pass: req.body.inputPassword1, firstName: req.body.firstName, lastName: req.body.lastName, super: 0, verificationCode: req.body.inputCode};
-            dbo.collection("accounts").insertOne(myobj, function(err, res) 
-            {
-                if (err) throw err;
-                if (!err) console.log("Account successfully created.");
-            });
-            db.close();
-        }
-      });
+    });
 });
 
 app.post('/verifyuser', function(req, res) {
@@ -224,20 +230,56 @@ app.post('/uploadContent', function(req, res) {
     console.log(req.body.inputTitle);
     console.log(req.body.inputDate);
     console.log(req.body.inputDuration);
+    console.log(req.signedCookies);
+    var username= "";
+    var adminName = "";
+    MongoClient.connect(url, { useNewUrlParser: true }, function(err, db) {
+        var dbo = db.db("reynoldsdb");
+
+        function createContent()
+        {
+            var myobj = { title: req.body.inputTitle, file: req.body.inputFile, date: req.body.inputDate, duration: req.body.inputDuration, admin: username, firstName: adminName, id: null};
+            dbo.collection("content").insertOne(myobj, function(err, res) 
+            {
+                if (err) throw err;
+            });
+            console.log("let's go");
+            db.close();
+            res.redirect('/create.html')
+        }
+        console.log(req.signedCookies.activeUser);
+        var query = { verificationCode: req.signedCookies.activeUser };
+        dbo.collection("accounts").find(query).toArray(function(err, result) {
+            if (err) throw err;
+            if (result == null || result == "") {
+                console.log("why the frik");
+                var fail = {
+                    messageTwo: "Invalid verification code."
+                };
+                db.close();
+                fs.readFile(__dirname + '/index.html', 'utf8', (err, data) => {
+                    if (err) throw err;
+                    var html = mustache.to_html(data, fail);
+                    res.send(html);
+                });
+            } else {
+                username = result[0].user;
+                adminName = result[0].firstName;
+                createContent();
+            }
+        });
+    });
 });
 
 app.post('/file-upload', function(req, res) {
     var form = new multiparty.Form();
     form.parse(req, function(err, fields, files) {
-        cloudinary.config({ 
-            cloud_name: 'dhwlyljdd', 
-            api_key: '751525171794449', 
-            api_secret: 'NHBYucD3tJPm6AOPRa0ZAeptoKc' 
-        });
+        console.log("hiii");
+        console.log(files.file[0].headers);
         cloudinary.v2.uploader.upload(files.file[0].path, 
         function(error, result) {console.log(result, error)});
-      });
-      return;
+    });
+    return;
 });
 
 http.listen(PORT, function(){
