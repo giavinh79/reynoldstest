@@ -4,9 +4,9 @@ const cookieParser = require('cookie-parser');
 const fs = require('fs'); // bring in the file system api
 const mustache = require('mustache'); //{{}}
 const MongoClient = require('mongodb').MongoClient;
+const nodemailer = require('nodemailer');
 const cloudinary = require('cloudinary');
 const multiparty = require('multiparty');
-// const util = require('util');
 
 cloudinary.config({ 
     cloud_name: 'dhwlyljdd', 
@@ -33,8 +33,13 @@ app
   .get('/css/dropzone.css', (req, res) => res.sendFile(__dirname + '/css/dropzone.css'))
   .get('/lib/dropzone.js', (req, res) => res.sendFile(__dirname + '/lib/dropzone.js'))
   .get('/css/loggedin.css', (req, res) => res.sendFile(__dirname + '/css/loggedin.css'))
-  .get('/css/signup.css', (req, res) => res.sendFile(__dirname + '/css/signup.css'))
   .get('/res/CompanyName.png', (req, res) => res.sendFile(__dirname + '/res/CompanyName.png'));
+  .get('/loggedin.html', (req, res) => res.sendFile(__dirname + '/loggedin.html'))
+  .get('/settings.html', (req, res) => res.sendFile(__dirname + '/settings.html'))
+  .get('/css/settings.css', (req, res) => res.sendFile(__dirname + '/css/settings.css'))
+  .get('/edit.html', (req, res) => res.sendFile(__dirname + '/edit.html'))
+  .get('/css/edit.css', (req, res) => res.sendFile(__dirname + '/css/edit.css'))
+  .get('/css/signup.css', (req, res) => res.sendFile(__dirname + '/css/signup.css'));
 //   .get('/loggedin.html', (req, res) => res.sendFile(__dirname + '/loggedin.html'));
 //   .get('/loggedin.html', (req, res) => res.sendFile(__dirname + '/loggedin.html'));
 //   .get('/', function(req, res) {
@@ -91,7 +96,7 @@ app.post('/login', function(req, res) {
                 var fail = {
                     message: "Invalid login"
                 };
-                    
+
                 var cookieOptions = {
                     maxAge: 1000 * 60 * 2, // would expire after 2 minutes
                     httpOnly: false, // The cookie only accessible by the web server
@@ -121,7 +126,7 @@ app.post('/signup', function(req, res) {
           var fail = {
             messageTwo: "Invalid verification code."
           };
-  
+
           fs.readFile(__dirname + '/index.html', 'utf8', (err, data) => {
             if (err) throw err;
             var html = mustache.to_html(data, fail);
@@ -138,12 +143,12 @@ app.post('/signup', function(req, res) {
                     var html = mustache.to_html(data, account); //template system used to generate dynamic HTML
                     res.send(html);
                 });
-  
+
               } else {
                   var fail = {
                       messageTwo: "Invalid verification code."
                   };
-  
+
                   fs.readFile(__dirname + '/index.html', 'utf8', (err, data) => {
                       if (err) throw err;
                       var html = mustache.to_html(data, fail);
@@ -165,7 +170,7 @@ app.post('/registerAccount', function(req, res) {
 
     function createAccount() {
         var myobj = { user: req.body.inputEmail, pass: req.body.inputPassword1, firstName: req.body.firstName, lastName: req.body.lastName, super: 0, verificationCode: req.body.inputCode};
-        dbo.collection("accounts").insertOne(myobj, function(err, res) 
+        dbo.collection("accounts").insertOne(myobj, function(err, res)
         {
             if (err) throw err;
             if (!err) console.log("Account successfully created.");
@@ -281,6 +286,280 @@ app.post('/file-upload', function(req, res) {
     });
     return;
 });
+
+app.post('/settingsForUser', function(req, res) {
+    if (req.signedCookies.activeUser == null) {
+      res.end('{"error" : "Invalid User", "status" : 401}');
+    } else {
+      MongoClient.connect(url, function(err, db) {
+        var dbo = db.db("reynoldsdb");
+        var query = { verificationCode: req.signedCookies.activeUser };
+        dbo.collection("accounts").find(query).toArray(function(err, result) {
+          if (err) throw err;
+          if (result == null || result == "") {
+            //nothing
+          } else {
+              var admin = {
+                super: result[0].super,
+                name: result[0].lastName + ", "+ result[0].firstName,
+                email: result[0].user
+              };
+              res.end('{"success" : "Valid User", "status" : 200, "user": ' + JSON.stringify(admin) + ' }');
+          }
+          db.close();
+        });
+      });
+    }
+});
+
+app.post('/emailAdminInvite', function(req, res) {
+
+  var VarCode;
+
+  function makeId() {
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    for (var i = 0; i < 6; i++)
+      text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+    return text;
+  }
+
+  function sendEmail() {
+    var message = '<h3>Welcome to the Admin Team!<br></br></h3><p>You have been invited to join the SOCS Reynolds Admin Team. </p><span>Use your Verification Code: "' + VarCode + '" at our website: </span><a href="http://www.socsreynolds.site">Reynolds Board</a><p><br></br>From,<br></br>The Admin Team</p>';
+    var smtpTransport = require('nodemailer-smtp-transport');
+
+    var transport = nodemailer.createTransport(smtpTransport({
+      service: 'gmail',
+      host: 'smtp.gmail.com',
+      auth: {
+        user: 'blessstylesocs@gmail.com',
+        pass: 'Reynolds123'
+      }
+    }));
+
+    const data = {
+      from: 'Reynolds SOCS Board <blessstylesocs@gmail.com>',
+      to: req.body.email,
+      subject: 'Admin Invitation',
+      html: '<p>'+ message + '</p>'
+    };
+
+    transport.sendMail(data).then(console.log).catch(console.error);
+    console.log("Email Sent");
+    var message = {
+        message: "Invitation Sent"
+    };
+    fs.readFile(__dirname + '/settings.html', 'utf8', (err, data) => {
+        if (err) throw err;
+        var html = mustache.to_html(data, message);
+        res.send(html);
+    });
+  }
+  function addCodeToDatabase() {
+    //check if varCode exists
+    MongoClient.connect(url, function(err, db) {
+      var exists;
+      var dbo = db.db("reynoldsdb");
+      do {
+        console.log("Generating Code..");
+        VarCode = makeId();
+        var query = { code: VarCode };
+        dbo.collection("verificationCodes").find(query).toArray(function(err, result) {
+          if (err) throw err;
+          if (result == null || result == "") {
+            exists = false;
+          } else {
+            exists = true;
+          }
+          db.close();
+        });
+      } while (exists)
+
+      var codeObj = { code: VarCode, active: "t", email: req.body.email };
+      dbo.collection("verificationCodes").insertOne(codeObj, function(err, res) {
+        if (err) throw err;
+        console.log("verification Code added");
+        sendEmail();
+        db.close();
+      });
+    });
+  }
+
+  //check if email is already in use
+  MongoClient.connect(url, function(err, db) {
+    var dbo = db.db("reynoldsdb");
+    VarCode = makeId();
+    var query = { user: req.body.email };
+    dbo.collection("accounts").find(query).toArray(function(err, result) {
+      if (err) throw err;
+      if (result == null || result == "") {
+        addCodeToDatabase();
+      } else {
+        console.log("Email already in use");
+        var message = {
+            message: "This Email is already being used by another account"
+        };
+        fs.readFile(__dirname + '/settings.html', 'utf8', (err, data) => {
+            if (err) throw err;
+            var html = mustache.to_html(data, message);
+            res.send(html);
+        });
+      }
+      db.close();
+    });
+  });
+});
+
+app.post('/admins', function(req, res) {
+  var listOfAdmins = [];
+  MongoClient.connect(url, function(err, db) {
+    var dbo = db.db("reynoldsdb");
+    dbo.collection("accounts").find({}).toArray(function(err, result) {
+      if (err) throw err;
+      if (result == null || result == "") {
+        //nothing
+      } else {
+        for (var i = 0; i < result.length; i++) {
+            var admin = {
+              role: (result[i].super === 1) ? 'Super Admin' : 'Admin',
+              name: result[i].lastName + ", "+ result[i].firstName,
+              email:result[i].user
+            };
+            listOfAdmins.push(admin);
+        }
+        var admins = {
+            admins: JSON.stringify(listOfAdmins)
+        };
+        fs.readFile(__dirname + '/settings.html', 'utf8', (err, data) => {
+            if (err) throw err;
+            var html = mustache.to_html(data, admins);
+            res.send(html);
+        });
+      }
+      db.close();
+    });
+  });
+});
+
+app.post('/deleteAdmin', function(req, res) {
+  var listOfAdmins = [];
+  MongoClient.connect(url, function(err, db) {
+    var dbo = db.db("reynoldsdb");
+    var query = { user: req.body.email };
+    dbo.collection("accounts").deleteOne(query, function(err, obj) {
+      if (err) throw err;
+      console.log("Admin: " + req.body.email + ", deleted");
+      db.close();
+    });
+    dbo.collection("accounts").find({}).toArray(function(err, result) {
+      if (err) throw err;
+      if (result == null || result == "") {
+        //nothing
+      } else {
+        for (var i = 0; i < result.length; i++) {
+            var admin = {
+              role: (result[i].super === 1) ? 'Super Admin' : 'Admin',
+              name: result[i].lastName + ", "+ result[i].firstName,
+              email:result[i].user
+            };
+            listOfAdmins.push(admin);
+        }
+        var admins = {
+            admins: JSON.stringify(listOfAdmins),
+            messageDel: "Admin Successfully Deleted"
+        };
+        fs.readFile(__dirname + '/settings.html', 'utf8', (err, data) => {
+            if (err) throw err;
+            var html = mustache.to_html(data, admins);
+            res.send(html);
+        });
+      }
+      db.close();
+      });
+    });
+  });
+
+  app.post('/changeEmail', function(req, res) {
+    var account = {
+        userEmail: req.body.email
+    };
+    fs.readFile(__dirname + '/changeEmail.html', 'utf8', (err, data) => {
+        if (err) throw err;
+        var html = mustache.to_html(data, account);
+        res.send(html);
+    });
+  });
+
+  app.post('/changePassword', function(req, res) {
+    var account = {
+        userEmail: req.body.email
+    };
+    fs.readFile(__dirname + '/changePassword.html', 'utf8', (err, data) => {
+        if (err) throw err;
+        var html = mustache.to_html(data, account);
+        res.send(html);
+    });
+  });
+
+  app.post('/updateAccount', function(req, res) {
+    MongoClient.connect(url, function(err, db) {
+      var dbo = db.db("reynoldsdb");
+      var query = { user: req.body.email };
+      var updating = "nothing";
+      var newvalues;
+
+      function updateAccount() {
+        dbo.collection("accounts").updateOne(query, newvalues, function(err, response) {
+          if (err) throw err;
+          if(updating === "user") {
+            console.log("Email Updated");
+            var messageEmail = {
+                messageEmail: "Email has been updated"
+            };
+          } else if(updating === "pass") {
+            console.log("Password Updated");
+            var messagePass = {
+                messagePass: "Password has been updated"
+            };
+          }
+          fs.readFile(__dirname + '/settings.html', 'utf8', (err, data) => {
+              if (err) throw err;
+              var html = mustache.to_html(data, (updating === "user") ? messageEmail : messagePass);
+              res.send(html);
+          });
+          db.close();
+        });
+      }
+
+      if (req.body.newEmail1) {
+        //Check if Email is being used by another account
+          var query2 = { user: req.body.newEmail1 };
+          dbo.collection("accounts").find(query2).toArray(function(err, result) {
+            if (err) throw err;
+            if (result == null || result == "") {
+              updating = "user";
+              newvalues = { $set: {user: req.body.newEmail1} };
+              updateAccount();
+            } else {
+              console.log("Email Aready Exists");
+              var messageEmail = {
+                  messageEmail: "That email is being used by another account"
+              };
+              fs.readFile(__dirname + '/settings.html', 'utf8', (err, data) => {
+                  if (err) throw err;
+                  var html = mustache.to_html(data, messageEmail);
+                  res.send(html);
+              });
+            }
+          });
+      } else if(req.body.newPassword1){
+        updating = "pass";
+        newvalues = { $set: {pass: req.body.newPassword1} };
+        updateAccount();
+      }
+    });
+  });
 
 http.listen(PORT, function(){
     console.log('listening on localhost:8080');
