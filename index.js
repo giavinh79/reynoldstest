@@ -14,6 +14,7 @@ cloudinary.config({
     api_secret: 'NHBYucD3tJPm6AOPRa0ZAeptoKc' 
 });
 
+app.enable('trust proxy');
 app.use(cookieParser("375025"));
 app.use(function(req, res, next) { //CORS
     res.header('Access-Control-Allow-Origin', "*");
@@ -82,7 +83,7 @@ app.post('/login', function(req, res) {
 
                 var cookieOptions = {
                     maxAge: 1000 * 60 * 120, // would expire after 2 hours (120 minutes)
-                    httpOnly: false, // true: The cookie only accessible by the web server
+                    httpOnly: true, // true: The cookie only accessible by the web server
                     signed: true // Signed: Cookie has a signature to show if user manually changed it
                 }
                 res.cookie('activeUser', result[0].verificationCode, cookieOptions);
