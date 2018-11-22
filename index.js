@@ -197,7 +197,7 @@ app.post('/settingsForUser', function(req, res) {
         dbo.collection("accounts").find(query).toArray(function(err, result) {
           if (err) throw err;
           if (result == null || result == "") {
-            //nothing
+            res.end('{"error" : "Invalid User", "status" : 401}');
           } else {
               var admin = {
                 super: result[0].super,
@@ -458,6 +458,61 @@ app.post('/deleteAdmin', function(req, res) {
         newvalues = { $set: {pass: req.body.newPassword1} };
         updateAccount();
       }
+    });
+  });
+
+  app.post('/contentList', function(req, res) {
+    MongoClient.connect(url, function(err, db) {
+      var dbo = db.db("reynoldsdb");
+      var contentList;
+
+      function getUserInfo() {
+        var query = { verificationCode: req.signedCookies.activeUser };
+        dbo.collection("accounts").find(query).toArray(function(err, result) {
+          if (err) throw err;
+          if (result == null || result == "") {
+            res.end('{"error" : "Invalid User", "status" : 401}');
+          } else {
+              var admin = {
+                super: result[0].super,
+                name: result[0].lastName + ", "+ result[0].firstName,
+                email: result[0].user
+              };
+              res.end('{"status" : 200, "contentList": ' + JSON.stringify(contentList) + ', "user": ' + JSON.stringify(admin) +' }');
+          }
+          db.close();
+        });
+      }
+
+      dbo.collection("content").find({}).toArray(function(err, result) {
+        if (err) throw err;
+        if (result == null || result == "") {
+          res.end('{"error" : "No Content Found", "status" : 401}');
+        } else {
+          contentList = result;
+          getUserInfo();
+        }
+      });
+    });
+  });
+
+  app.post('/deleteContent', function(req, res) {
+    MongoClient.connect(url, function(err, db) {
+      var dbo = db.db("reynoldsdb");
+      var query = { id: req.body.id };
+      dbo.collection("content").deleteOne(query, function(err, obj) {
+        if (err) throw err;
+        console.log("Content: " + req.body.id + ", deleted");
+        db.close();
+        var messageDelete = {
+            messageDelete: "Content was successfully deleted"
+        };
+        fs.readFile(__dirname + '/edit.html', 'utf8', (err, data) => {
+            if (err) throw err;
+            var html = mustache.to_html(data, messageDelete);
+            res.send(html);
+        });
+      });
     });
   });
 
