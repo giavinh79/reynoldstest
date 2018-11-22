@@ -14,7 +14,7 @@ cloudinary.config({
     api_secret: 'NHBYucD3tJPm6AOPRa0ZAeptoKc' 
 });
 
-app.set('trust proxy', '127.0.0.1');
+app.set('trust proxy', 1);
 app.use(cookieParser("375025"));
 app.use(function(req, res, next) { //CORS
     res.header('Access-Control-Allow-Origin', "*");
