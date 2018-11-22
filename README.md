@@ -2,6 +2,8 @@
 
 ## Site: http://www.socsreynolds.site
   * Sample Super Admin login - user: richard@gmail.com password: bald
+  * mLab (user: cis3750group5, pass: reynolds123)
+  * Cloudinary (user: glam01@uoguelph.ca, pass: reynolds123)
 
   ### Setup:
  * git clone https://github.com/GV79/reynoldstest.git
