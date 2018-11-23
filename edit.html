@@ -19,7 +19,7 @@
                 var obj, x, txt = "";
                 txt += "<table class=\"table table-striped\"><thead><tr><th scope=\"col\">Title</th><th scope=\"col\">File</th><th scope=\"col\">Admin Email</th><th scope=\"col\">Admin Name</th><th scope=\"col\">Date</th><th scope=\"col\">Duration</th><th scope=\"col\">Edit</th><th scope=\"col\">Delete</th></tr></thead><tbody>"
                 for (x in contentList) {
-                    txt += "<tr><td>" + contentList[x].title + "</td><td>" + contentList[x].file + "</td><td>" + contentList[x].author + "</td><td>" + contentList[x].firstName + "</td><td>" +  contentList[x].date + "</td><td>" + contentList[x].duration + "</td>";
+                    txt += "<tr><td>" + contentList[x].title + "</td><td>" + contentList[x].file + "</td><td>" + contentList[x].admin + "</td><td>" + contentList[x].firstName + "</td><td>" +  contentList[x].date + "</td><td>" + contentList[x].duration + "</td>";
                     if (user.super === 1) {
                       txt += "<td>" + "<form id=\"deleteForm\" action=\"editContent\" method=\"post\">" + "<input style=\"display: none;\" id=\"id\" name=\"id\" value=\"" + contentList[x].id + "\"></input>" + "<button class=\"btnIcon\" type=\"submit\"><i class=\"fa fa-edit\" style=\"font-size:24px;\"></i></button></form></td><td>" + "<form id=\"deleteForm\" action=\"deleteContent\" method=\"post\">" + "<input style=\"display: none;\" id=\"id\" name=\"id\" value=\"" + contentList[x].id + "\"></input>" + "<button class=\"btnIcon\" type=\"submit\"><i class=\"fa fa-ban\" style=\"font-size:24px; color: red;\"></i></button></form></td></tr>"
                     } else {
@@ -33,7 +33,7 @@
 
             $.ajax({
                 type: 'POST',
-                url: 'http://localhost:8080/contentList',
+                url: 'contentList',
                 dataType: "json",
                 success: function (data) {
                     if (data.status != 200) {
