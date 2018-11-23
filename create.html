@@ -15,6 +15,21 @@
 
         <link rel="stylesheet" href="css/create.css">
         <script>
+            $.ajax({ //Verifies whether client is a logged in user, if not, returns to homepage
+                type: 'POST',
+                url: 'verifyuser',
+                dataType: "json",
+                success: function (data) {
+                    if (data.status != 200)
+                    {
+                        window.location.replace("/");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    window.location.replace("/");
+                }
+            });
+
             var myDropzone;
             Dropzone.autoDiscover = false;
             $(document).ready(function() {
@@ -48,7 +63,8 @@
 
             function uploadFile() {
                 var count = myDropzone.files.length;
-                var fileElement = document.getElemenyById('inputFile');
+                var fileElement = document.getElementById('inputFile');
+
                 if (count > 0)
                 {
                     fileElement.value = myDropzone.files[0].name;
@@ -69,7 +85,24 @@
                     alert('Must upload a file!');
                     return false;
                 }
+            }
 
+            function logout() {
+                var cookies = document.cookie.split("; ");
+                for (var c = 0; c < cookies.length; c++) {
+                    var d = window.location.hostname.split(".");
+                    while (d.length > 0) {
+                        var cookieBase = encodeURIComponent(cookies[c].split(";")[0].split("=")[0]) + '=; expires=Thu, 01-Jan-1970 00:00:01 GMT; domain=' + d.join('.') + ' ;path=';
+                        var p = location.pathname.split('/');
+                        document.cookie = cookieBase + '/';
+                        while (p.length > 0) {
+                            document.cookie = cookieBase + p.join('/');
+                            p.pop();
+                        };
+                        d.shift();
+                    }
+                }
+                return true;
             }
         </script>
     </head>
@@ -77,11 +110,11 @@
         <nav class="navbar navbar-default">
             <div class="container-fluid">
                 <ul class="nav navbar-nav">
-                    <li><a href="#" data-toggle="tab">View</a></li>
+                    <li><a href="loggedin.html">View</a></li>
                     <li class="active"><a href="create.html">Create</a></li>
                     <li><a href="edit.html">Edit</a></li>
                     <li><a href="settings.html">Settings</a></li>
-                    <li id="logout"><a href="#">Logout</a></li>
+                    <li id="logout"><a href='/' onclick='return logout()'>Logout</a></li>
                 </ul>
             </div>
         </nav>
@@ -110,7 +143,7 @@
                 </div>
             </form>
 
-            <br><form action="file-upload" class="dropzone" method="post" id="uploadForm" style="margin-top: -27rem;"></form>
+            <br><form action="file-upload" class="dropzone" method="post" id="uploadForm" style="margin-top: -29.5rem;"></form>
         </div>
     </body>
 </html>
