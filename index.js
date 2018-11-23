@@ -13,10 +13,10 @@ const nodemailer = require('nodemailer');
 const cloudinary = require('cloudinary');
 const multiparty = require('multiparty');
 
-cloudinary.config({ 
-    cloud_name: 'dhwlyljdd', 
-    api_key: '751525171794449', 
-    api_secret: 'NHBYucD3tJPm6AOPRa0ZAeptoKc' 
+cloudinary.config({
+    cloud_name: 'dhwlyljdd',
+    api_key: '751525171794449',
+    api_secret: 'NHBYucD3tJPm6AOPRa0ZAeptoKc'
 });
 
 app.use(cookieParser("375025"));
@@ -195,11 +195,11 @@ app.post('/registerAccount', function(req, res) {
         {
             createAccount();
             console.log("howtf")
-    
+
             var success = {
               messageTwo: "Account successfully created."
             };
-  
+
             fs.readFile(__dirname + '/index.html', 'utf8', (err, data) => {
                 if (err) throw err;
                 var html = mustache.to_html(data, success);
@@ -241,10 +241,6 @@ app.post('/verifyuser', function(req, res) {
 });
 
 app.post('/uploadContent', function(req, res) {
-    console.log(req.body.inputTitle);
-    console.log(req.body.inputDate);
-    console.log(req.body.inputDuration);
-    console.log(req.signedCookies);
     var username= "";
     var adminName = "";
     MongoClient.connect(url, { useNewUrlParser: true }, function(err, db) {
@@ -252,8 +248,8 @@ app.post('/uploadContent', function(req, res) {
 
         function createContent()
         {
-            var myobj = { title: req.body.inputTitle, file: req.body.inputFile, date: req.body.inputDate, duration: req.body.inputDuration, admin: username, firstName: adminName, id: null};
-            dbo.collection("content").insertOne(myobj, function(err, res) 
+            var myobj = { title: req.body.inputTitle, file: req.body.inputFile, date: req.body.inputDate, duration: req.body.inputDuration, admin: username, firstName: adminName, id: req.body.id};
+            dbo.collection("content").insertOne(myobj, function(err, res)
             {
                 if (err) throw err;
             });
@@ -289,9 +285,12 @@ app.post('/file-upload', function(req, res) {
     var form = new multiparty.Form();
     form.parse(req, function(err, fields, files) {
         console.log("hiii");
-        console.log(files.file[0].headers);
-        cloudinary.v2.uploader.upload(files.file[0].path, 
-        function(error, result) {console.log(result, error)});
+        console.log(fields);
+        console.log(files);
+        cloudinary.v2.uploader.upload(files.file[0].path,
+          {public_id: req.body.id},
+          function(error, result) {console.log(result, error)}
+        );
     });
     return;
 });
@@ -621,6 +620,28 @@ app.post('/deleteAdmin', function(req, res) {
             var html = mustache.to_html(data, messageDelete);
             res.send(html);
         });
+      });
+    });
+  });
+
+  app.post('/editContent', function(req, res) {
+    MongoClient.connect(url, function(err, db) {
+      var dbo = db.db("reynoldsdb");
+      var query = { id: req.body.id };
+      dbo.collection("content").find(query).toArray(function(err, result) {
+        if (err) throw err;
+        if (result == null || result == "") {
+          res.end('{"error" : "No Content Found", "status" : 401}');
+        } else {
+          var content = {
+              content: JSON.stringify(result[0])
+          };
+          fs.readFile(__dirname + '/editContent.html', 'utf8', (err, data) => {
+              if (err) throw err;
+              var html = mustache.to_html(data, content);
+              res.send(html);
+          });
+        }
       });
     });
   });

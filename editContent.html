@@ -15,21 +15,6 @@
 
         <link rel="stylesheet" href="css/create.css">
         <script>
-            $.ajax({ //Verifies whether client is a logged in user, if not, returns to homepage
-                type: 'POST',
-                url: 'verifyuser',
-                dataType: "json",
-                success: function (data) {
-                    if (data.status != 200)
-                    {
-                        window.location.replace("/");
-                    }
-                },
-                error: function (xhr, status, error) {
-                    window.location.replace("/");
-                }
-            });
-
             var myDropzone;
             Dropzone.autoDiscover = false;
             $(document).ready(function() {
@@ -58,18 +43,13 @@
                     maxFiles: 1,
                     acceptedFiles: 'image/*',
                     enqueueForUpload: true,
+                    addRemoveLinks: true
                 });
             });
 
             function uploadFile() {
-                //Get unique Id
-                var id = (new Date).getTime();
-                document.getElementById("id1").value = id;
-                document.getElementById("id2").value = id;
-
-                //File Shit
                 var count = myDropzone.files.length;
-                var fileElement = document.getElementById('inputFile');
+                var fileElement = document.getElemenyById('inputFile');
                 if (count > 0)
                 {
                     fileElement.value = myDropzone.files[0].name;
@@ -81,36 +61,41 @@
                     alert('Must upload a file!');
                     return false;
                 }
+
             }
 
-            function logout() {
-                var cookies = document.cookie.split("; ");
-                for (var c = 0; c < cookies.length; c++) {
-                    var d = window.location.hostname.split(".");
-                    while (d.length > 0) {
-                        var cookieBase = encodeURIComponent(cookies[c].split(";")[0].split("=")[0]) + '=; expires=Thu, 01-Jan-1970 00:00:01 GMT; domain=' + d.join('.') + ' ;path=';
-                        var p = location.pathname.split('/');
-                        document.cookie = cookieBase + '/';
-                        while (p.length > 0) {
-                            document.cookie = cookieBase + p.join('/');
-                            p.pop();
-                        };
-                        d.shift();
-                    }
-                }
-                return true;
-            }
+            window.history.pushState("", "", '/');
+            $(document).ready(function() {
+              if ('{{content}}'.charAt(1) != '{') {
+                var content = '{{content}}';
+                var myObj = JSON.parse(content.replace(/&quot;/g,'"'));
+
+                //Each Content Prop
+                var title = myObj.title;
+                document.getElementById("inputTitle").value = title;
+                var datePicker = myObj.date;
+                document.getElementById("datePicker").value = datePicker;
+                document.getElementById("datePicker").min = datePicker;
+                var inputDuration = myObj.duration;
+                document.getElementById("inputDuration").value = inputDuration;
+                //var mockFile = { name: myObj.file, size: 1300000 };
+                //myDropzone.options.addedfile.call(myDropzone, mockFile);
+                //myDropzone.options.thumbnail.call(myDropzone, mockFile, "https://res.cloudinary.com/dhwlyljdd/image/upload/v1542938632/" + myObj.id);
+                document.getElementById("currentImage").src = "https://res.cloudinary.com/dhwlyljdd/image/upload/v1542938632/" + myObj.id;
+
+              }
+            });
         </script>
     </head>
     <body>
         <nav class="navbar navbar-default">
             <div class="container-fluid">
                 <ul class="nav navbar-nav">
-                    <li><a href="loggedin.html">View</a></li>
-                    <li class="active"><a href="create.html">Create</a></li>
-                    <li><a href="edit.html">Edit</a></li>
+                    <li><a href="loggedin.html" data-toggle="tab">View</a></li>
+                    <li><a href="create.html">Create</a></li>
+                    <li class="active"><a href="edit.html">Edit</a></li>
                     <li><a href="settings.html">Settings</a></li>
-                    <li id="logout"><a href='/' onclick='return logout()'>Logout</a></li>
+                    <li id="logout"><a href="#">Logout</a></li>
                 </ul>
             </div>
         </nav>
@@ -131,19 +116,17 @@
                         <input type="number" min="1" max="5" class="form-control" id="inputDuration" name="inputDuration" placeholder="Designate number of weeks content will display for" required>
                     </div>
                 </div>
-                <input style="display: none" type="text" id="id1" name="id" />
                 <div style="text-align: right;">
                     <button type="submit" class="btn btn-primary" style="margin-top: 22.5rem; width: 10rem; height: 4rem; font-size: 1.6rem;">Submit</button>
                 </div>
                 <div style="opacity: 0;">
-                    <input type="text" id="inputFile" name="inputFile" />
+                    <input type="text" id="inputFile" name="inputFile" disabled />
                 </div>
             </form>
 
-            <br>
-            <form action="file-upload" class="dropzone" method="post" id="uploadForm" style="margin-top: -29.5rem;">
-              <input style="display: none" type="text" id="id2" name="id" />
-            </form>
+            <br><form action="file-upload" class="dropzone" method="post" id="uploadForm" style="margin-top: -27rem;"></form>
+
+            <img id="currentImage" width='150' height='150' />
         </div>
     </body>
 </html>

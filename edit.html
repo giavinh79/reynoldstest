@@ -21,7 +21,7 @@
                 for (x in contentList) {
                     txt += "<tr><td>" + contentList[x].title + "</td><td>" + contentList[x].file + "</td><td>" + contentList[x].author + "</td><td>" + contentList[x].firstName + "</td><td>" +  contentList[x].date + "</td><td>" + contentList[x].duration + "</td>";
                     if (user.super === 1) {
-                      txt += "<td>" + "<form id=\"deleteForm\" action=\"deleteAdmin\" method=\"post\">" + "<input style=\"display: none;\" id=\"title\" name=\"title\" value=\"" + contentList[x].title + "\"></input>" + "<button class=\"btnIcon\" type=\"submit\"><i class=\"fa fa-edit\" style=\"font-size:24px;\"></i></button></form></td><td>" + "<form id=\"deleteForm\" action=\"deleteContent\" method=\"post\">" + "<input style=\"display: none;\" id=\"id\" name=\"id\" value=\"" + contentList[x].id + "\"></input>" + "<button class=\"btnIcon\" type=\"submit\"><i class=\"fa fa-ban\" style=\"font-size:24px; color: red;\"></i></button></form></td></tr>"
+                      txt += "<td>" + "<form id=\"deleteForm\" action=\"editContent\" method=\"post\">" + "<input style=\"display: none;\" id=\"id\" name=\"id\" value=\"" + contentList[x].id + "\"></input>" + "<button class=\"btnIcon\" type=\"submit\"><i class=\"fa fa-edit\" style=\"font-size:24px;\"></i></button></form></td><td>" + "<form id=\"deleteForm\" action=\"deleteContent\" method=\"post\">" + "<input style=\"display: none;\" id=\"id\" name=\"id\" value=\"" + contentList[x].id + "\"></input>" + "<button class=\"btnIcon\" type=\"submit\"><i class=\"fa fa-ban\" style=\"font-size:24px; color: red;\"></i></button></form></td></tr>"
                     } else {
                       txt += "<td></td><td></td></tr>"
                     }
