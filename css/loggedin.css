@@ -1,6 +1,15 @@
 html, body {
     margin: 0;
     padding: 0;
+    height: 100%;
+}
+
+.wrapper {
+    height: 100%;
+}
+
+.navbar {
+    margin: 0;
 }
 
 ul.navbar-nav {
@@ -11,7 +20,61 @@ ul.navbar-nav li:nth-child(5) {
     margin-left: auto;
     float: right;
 }
-.item1{
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.contentWrapper {
+    text-align: center;
+    /* align-items: center; */
+    /* justify-content: center; */
+    display: flex;
+    flex-grow: 1;
+}
+
+h2 {
+    margin: 0;
+}
+
+.contentWrapper div:nth-child(1) {
+    /* padding: 0 1rem; */
+    flex: 2;
+}
+
+.contentWrapper div:nth-child(1) div:nth-child(1), .contentWrapper div:nth-child(1) div:nth-child(2) {
+    display: flex;
+    align-items: center;
+    padding: 1.2rem;
+    border-right: 1px solid grey;
+    height: 50%;
+}
+
+.contentWrapper div:nth-child(1) div:nth-child(1){
+    border-bottom: 1px solid grey;
+    flex: 1;
+}
+
+.contentWrapper div:nth-child(1) div:nth-child(2) {
+    border-bottom: 1px solid grey;
+    flex: 3;
+}
+
+.leftPane {
+    display: flex;
+    flex-direction: column;
+}
+
+.rightPane {
+    padding: 1rem;
+    background-color: lightblue;
+    flex: 5;
+}
+
+
+
+/* .item1{
     grid-area: header;
 }
 .item2{
@@ -32,8 +95,4 @@ ul.navbar-nav li:nth-child(5) {
     padding: 20px 0;
     font-size: 30px;
     border: 5px solid black;
-  }
-/* #logout {
-    margin-left: auto;
-    float: right;
-} */
+  } */

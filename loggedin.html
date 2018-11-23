@@ -160,7 +160,7 @@
                         let seconds = dateObj.getSeconds();
                         minutes = checkTime(minutes);
                         seconds = checkTime(seconds);
-                        document.getElementById("demo").innerHTML = weekdayStr+ " " + monthStr + " " + date+type+ " " +year+ " " +  hour + ":" + minutes + ":" + seconds + "" + centralTime;
+                        document.getElementById("demo").innerHTML = weekdayStr+ " " + monthStr + " " + date+type+ " " +year+ " " +  hour + ":" + minutes + ":" + seconds + " " + centralTime;
                         let clock = setTimeout(startTime,500);
                 }
                 function checkTime(i)
@@ -190,38 +190,35 @@
         </script>
     </head>
     <body>
-      <nav class="navbar navbar-default">
-          <div class="container-fluid">
-              <ul class="nav navbar-nav">
-                <li class="active"><a href="#" data-toggle="tab">View</a></li>
-                <li><a href="create.html">Create</a></li>
-                <li><a href="edit.html">Edit</a></li>
-                <li><a href="settings.html">Settings</a></li>
-                <li id="logout"><a href='/' onclick='return logout()'>Logout</a></li>
-              </ul>
-          </div>
-      </nav>
+      <div class="wrapper">
+            <nav class="navbar navbar-default">
+                <div class="container-fluid">
+                    <ul class="nav navbar-nav">
+                        <li class="active"><a href="#" data-toggle="tab">View</a></li>
+                        <li><a href="create.html">Create</a></li>
+                        <li><a href="edit.html">Edit</a></li>
+                        <li><a href="settings.html">Settings</a></li>
+                        <li id="logout"><a href='/' onclick='return logout()'>Logout</a></li>
+                    </ul>
+                </div>
+            </nav>
 
-      <div class = "grid-layout">
+            <div class="contentWrapper">
+                <div class="leftPane">
+                    <div class ="item1">
+                        <h2>SCHOOL OF COMPUTER SCIENCE</h2>
+                        <!-- <h2>COMPUTER SCIENCE</h2> -->
+                    </div>
+                    <div class= "item2">
+                            <h3 id= "demo"></h3>
+                    </div>
+                </div>
 
-
-            <div class ="item1">
-
-                <h2>SCHOOL OF</h2>
-                <h2>COMPUTER SCIENCE</h2>
+                <div class="rightPane">
+                    <h1>Content Placeholder</h1>
+                </div>
             </div>
-
-            <div class= "item2">
-                <h3 id= "demo"></h3>
-            </div>
-            <div class = "item3">
-                <p>Content</p>
-            </div>
-            
-
-      </div>
-
-
+        </div>
     </body>
-    <h3>View</h3>
+    <!-- <h3>View</h3> -->
 </html>
