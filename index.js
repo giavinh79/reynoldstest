@@ -32,6 +32,7 @@ const PORT = process.env.PORT || 80;
 
 app
   .get('/', (req, res) => res.sendFile(__dirname + '/index.html'))
+  .get('/favicon.ico', (req, res) => res.sendFile(__dirname + '/favicon.ico'))
   .get('/create.html', (req, res) => res.sendFile(__dirname + '/create.html'))
   .get('/css/home.css', (req, res) => res.sendFile(__dirname + '/css/home.css'))
   .get('/css/create.css', (req, res) => res.sendFile(__dirname + '/css/create.css'))
@@ -87,7 +88,7 @@ app.post('/login', function(req, res) {
 
                 var cookieOptions = {
                     maxAge: 1000 * 60 * 120, // would expire after 2 hours (120 minutes)
-                    httpOnly: true, // true: The cookie only accessible by the web server
+                    httpOnly: false, // true: The cookie only accessible by the web server
                     signed: true // Signed: Cookie has a signature to show if user manually changed it
                 }
                 res.cookie('activeUser', result[0].verificationCode, cookieOptions);
