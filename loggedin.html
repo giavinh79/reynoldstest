@@ -13,7 +13,7 @@
         <script>
             $.ajax({ //Verifies whether client is a logged in user, if not, returns to homepage
                 type: 'POST',
-                url: 'http://localhost:8080/verifyuser',
+                url: 'verifyuser',
                 dataType: "json",
                 success: function (data) {
                     if (data.status != 200)

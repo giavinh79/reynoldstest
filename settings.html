@@ -13,6 +13,20 @@
 
         <link rel="stylesheet" href="css/settings.css">
         <script>
+            $.ajax({ //Verifies whether client is a logged in user, if not, returns to homepage
+                type: 'POST',
+                url: 'verifyuser',
+                dataType: "json",
+                success: function (data) {
+                    if (data.status != 200)
+                    {
+                        window.location.replace("/");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    window.location.replace("/");
+                }
+            });
             var user;
 
             function updateUser() {
@@ -33,20 +47,15 @@
               }
             }
 
-            $.ajax({ //Verifies whether client is a logged in user, if not, returns to homepage
+            $.ajax({
                 type: 'POST',
-                url: 'http://localhost:8080/settingsForUser',
+                url: 'settingsForUser',
                 dataType: "json",
                 success: function (data) {
-                    if (data.status != 200) {
-                        window.location.replace("/");
-                    } else {
-                      user = data.user;
-                      updateUser();
-                    }
+                    user = data.user;
+                    updateUser();
                 },
                 error: function (xhr, status, error) {
-                    window.location.replace("/");
                 }
             });
 

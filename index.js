@@ -1,4 +1,9 @@
 const app = require('express')(); //dependencies and modules
+// app.enable('trust proxy');
+// app.set('trust proxy');
+// app.get('trust proxy');
+// console.log(app.get('trust proxy'));
+
 const http = require('http').Server(app);
 const cookieParser = require('cookie-parser');
 const fs = require('fs'); // bring in the file system api
@@ -14,7 +19,6 @@ cloudinary.config({
     api_secret: 'NHBYucD3tJPm6AOPRa0ZAeptoKc' 
 });
 
-app.set('trust proxy', 1);
 app.use(cookieParser("375025"));
 app.use(function(req, res, next) { //CORS
     res.header('Access-Control-Allow-Origin', "*");
@@ -23,7 +27,7 @@ app.use(function(req, res, next) { //CORS
     next();
 })
 
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 80;
 //process.env.PORT: convention for Heroku -> if nothing in environ. var then port is 8080
 
 app
@@ -222,6 +226,8 @@ app.post('/registerAccount', function(req, res) {
 });
 
 app.post('/verifyuser', function(req, res) {
+    console.log("hiii");
+    console.log(req.cookies);
     console.log(req.signedCookies);
     if (req.signedCookies.activeUser == null)
     {
@@ -564,5 +570,5 @@ app.post('/deleteAdmin', function(req, res) {
   });
 
 http.listen(PORT, function(){
-    console.log('listening on localhost:8080');
+    console.log('listening on localhost:80');
 });

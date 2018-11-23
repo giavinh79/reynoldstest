@@ -15,6 +15,21 @@
 
         <link rel="stylesheet" href="css/create.css">
         <script>
+            $.ajax({ //Verifies whether client is a logged in user, if not, returns to homepage
+                type: 'POST',
+                url: 'verifyuser',
+                dataType: "json",
+                success: function (data) {
+                    if (data.status != 200)
+                    {
+                        window.location.replace("/");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    window.location.replace("/");
+                }
+            });
+
             var myDropzone;
             Dropzone.autoDiscover = false;
             $(document).ready(function() {
@@ -48,7 +63,8 @@
 
             function uploadFile() {
                 var count = myDropzone.files.length;
-                var fileElement = document.getElemenyById('inputFile');
+                var fileElement = document.getElementById('inputFile');
+
                 if (count > 0)
                 {
                     fileElement.value = myDropzone.files[0].name;
@@ -69,7 +85,6 @@
                     alert('Must upload a file!');
                     return false;
                 }
-
             }
         </script>
     </head>
