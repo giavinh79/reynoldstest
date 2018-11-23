@@ -32,6 +32,7 @@ const PORT = process.env.PORT || 80;
 
 app
   .get('/', (req, res) => res.sendFile(__dirname + '/index.html'))
+  .get('/favicon.ico', (req, res) => res.sendFile(__dirname + '/favicon.ico'))
   .get('/create.html', (req, res) => res.sendFile(__dirname + '/create.html'))
   .get('/css/home.css', (req, res) => res.sendFile(__dirname + '/css/home.css'))
   .get('/css/create.css', (req, res) => res.sendFile(__dirname + '/css/create.css'))
