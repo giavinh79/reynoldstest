@@ -72,6 +72,12 @@ h2 {
     flex: 5;
 }
 
+.item1, .item2 {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
 
 
 /* .item1{
