@@ -1,9 +1,4 @@
 const app = require('express')(); //dependencies and modules
-// app.enable('trust proxy');
-// app.set('trust proxy');
-// app.get('trust proxy');
-// console.log(app.get('trust proxy'));
-
 const http = require('http').Server(app);
 const cookieParser = require('cookie-parser');
 const fs = require('fs'); // bring in the file system api
@@ -11,9 +6,9 @@ const mustache = require('mustache'); //{{}}
 const MongoClient = require('mongodb').MongoClient;
 const nodemailer = require('nodemailer');
 const cloudinary = require('cloudinary');
-const multiparty = require('multiparty');
+const multiparty = require('multiparty'); //multi-part form parsing for drag and drop
 
-cloudinary.config({ 
+cloudinary.config({
     cloud_name: 'dhwlyljdd', 
     api_key: '751525171794449', 
     api_secret: 'NHBYucD3tJPm6AOPRa0ZAeptoKc' 
@@ -46,11 +41,11 @@ app
   .get('/edit.html', (req, res) => res.sendFile(__dirname + '/edit.html'))
   .get('/css/edit.css', (req, res) => res.sendFile(__dirname + '/css/edit.css'))
   .get('/css/signup.css', (req, res) => res.sendFile(__dirname + '/css/signup.css'));
-//   .get('/loggedin.html', (req, res) => res.sendFile(__dirname + '/loggedin.html'));
-//   .get('/loggedin.html', (req, res) => res.sendFile(__dirname + '/loggedin.html'));
-//   .get('/', function(req, res) {
-//     res.sendFile(__dirname + '/index.html');
-//   })
+
+for (i = 0; i < 47; i++)
+{
+  app.get('/res/weather/'+i+'.png', (req, res) => res.sendFile(__dirname + '/res/weather/'+i+'.png'))
+}   app.get('/res/weather/3200.png', (req, res) => res.sendFile(__dirname + '/res/weather/3200.png'));
 
 const bodyParser = require('body-parser'); // Necessary to get form data with Express
 app.use(bodyParser.urlencoded({ extended: true }));
