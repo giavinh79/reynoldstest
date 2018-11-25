@@ -280,14 +280,18 @@ app.post('/uploadContent', function(req, res) {
 
 app.post('/file-upload', function(req, res) {
     var form = new multiparty.Form();
-    form.parse(req, function(err, fields, files) {
-        console.log(files.file[0].path);
-        console.log("" + fields.id);
-        cloudinary.v2.uploader.upload(files.file[0].path,
-          {public_id: "" + fields.id},
-          function(error, result) {console.log(result, error)}
-        );
-    });
+
+      form.parse(req, function(err, fields, files) {
+        if (files) {
+          cloudinary.v2.uploader.upload(files.file[0].path,
+            {public_id: "" + fields.id},
+            function(error, result) {console.log(result, error)}
+          );
+        } else {
+          console.log("Image Failed to upload");
+        }
+      });
+
     return;
 });
 
