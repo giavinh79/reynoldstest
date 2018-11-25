@@ -227,9 +227,6 @@ app.post('/registerAccount', function(req, res) {
 });
 
 app.post('/verifyuser', function(req, res) {
-    console.log("hiii");
-    console.log(req.cookies);
-    console.log(req.signedCookies);
     if (req.signedCookies.activeUser == null)
     {
         res.end('{"error" : "Invalid User", "status" : 401}');
@@ -284,6 +281,8 @@ app.post('/uploadContent', function(req, res) {
 app.post('/file-upload', function(req, res) {
     var form = new multiparty.Form();
     form.parse(req, function(err, fields, files) {
+        console.log(files.file[0].path);
+        console.log("" + fields.id);
         cloudinary.v2.uploader.upload(files.file[0].path,
           {public_id: "" + fields.id},
           function(error, result) {console.log(result, error)}
@@ -607,6 +606,11 @@ app.post('/deleteAdmin', function(req, res) {
       var query = { id: req.body.id };
       dbo.collection("content").deleteOne(query, function(err, obj) {
         if (err) throw err;
+        cloudinary.v2.uploader.destroy("" + req.body.id,
+          function(error, result) {
+            console.log(result, error);
+          }
+        );
         console.log("Content: " + req.body.id + ", deleted");
         db.close();
         var messageDelete = {
@@ -642,6 +646,82 @@ app.post('/deleteAdmin', function(req, res) {
       });
     });
   });
+
+  app.post('/changeContent', function(req, res) {
+      var username= "";
+      var adminName = "";
+      MongoClient.connect(url, { useNewUrlParser: true }, function(err, db) {
+          var dbo = db.db("reynoldsdb");
+
+          function changeContent()
+          {
+              var query = { id: req.body.idOld };
+              if (req.body.idOld === req.body.id) {
+                var newvalues = { title: req.body.inputTitle, date: req.body.inputDate, duration: req.body.inputDuration, file:req.body.inputFile};
+              } else {
+                var newvalues = { title: req.body.inputTitle, date: req.body.inputDate, duration: req.body.inputDuration, file:req.body.inputFile, id:req.body.id};
+              }
+              dbo.collection("content").updateOne(query, {$set:newvalues}, function(err, response) {
+                  if (err) throw err;
+              });
+
+              db.close();
+              res.redirect('/edit.html');
+          }
+          console.log(req.signedCookies.activeUser);
+          var query = { verificationCode: req.signedCookies.activeUser };
+          dbo.collection("accounts").find(query).toArray(function(err, result) {
+              if (err) throw err;
+              if (result == null || result == "") {
+                  console.log("why the frik");
+                  var fail = {
+                      messageTwo: "Invalid verification code."
+                  };
+                  db.close();
+                  fs.readFile(__dirname + '/index.html', 'utf8', (err, data) => {
+                      if (err) throw err;
+                      var html = mustache.to_html(data, fail);
+                      res.send(html);
+                  });
+              } else {
+                  username = result[0].user;
+                  adminName = result[0].firstName;
+                  changeContent();
+              }
+          });
+      });
+  });
+
+  app.post('/file-update', function(req, res) {
+    var publicId, publicIdOld, path;
+
+    function upload() {
+      cloudinary.v2.uploader.upload(path, {public_id: publicId},
+        function(error, result) {
+          console.log(result, error);
+          deleteI();
+        }
+      );
+    }
+
+    function deleteI() {
+      cloudinary.v2.uploader.destroy(publicIdOld,
+        function(error, result) {
+          console.log(result, error);
+        }
+      );
+    }
+
+    var form = new multiparty.Form();
+    form.parse(req, function(err, fields, files) {
+        path = files.file[0].path;
+        publicId = "" + fields.id;
+        publicIdOld  = "" + fields.idOld;
+        upload();
+    });
+    return;
+  });
+
 
 http.listen(PORT, function(){
     console.log('listening on localhost:80');

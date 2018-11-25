@@ -37,29 +37,33 @@
                 $('#datePicker').attr("min", today);
 
                 myDropzone = new Dropzone("#uploadForm", {
-                    url: "file-upload",
+                    url: "file-update",
                     maxFilesize:10, // MB
                     autoProcessQueue: false,
                     maxFiles: 1,
                     acceptedFiles: 'image/*',
                     enqueueForUpload: true,
-                    addRemoveLinks: true
+                    addRemoveLinks: true,
+                    dictDefaultMessage : "Upload to change file"
                 });
             });
 
             function uploadFile() {
                 var count = myDropzone.files.length;
-                var fileElement = document.getElemenyById('inputFile');
+                var fileElement = document.getElementById('inputFile');
                 if (count > 0)
                 {
-                    fileElement.value = myDropzone.files[0].name;
-                    myDropzone.processQueue();
-                    return true;
+                  //Get unique Id
+                  var id = (new Date).getTime();
+                  document.getElementById("id1").value = id;
+                  document.getElementById("id2").value = id;
+                  fileElement.value = myDropzone.files[0].name;
+                  myDropzone.processQueue();
+                  return true;
                 }
                 else
                 {
-                    alert('Must upload a file!');
-                    return false;
+                  return true;
                 }
 
             }
@@ -78,10 +82,12 @@
                 document.getElementById("datePicker").min = datePicker;
                 var inputDuration = myObj.duration;
                 document.getElementById("inputDuration").value = inputDuration;
-                //var mockFile = { name: myObj.file, size: 1300000 };
-                //myDropzone.options.addedfile.call(myDropzone, mockFile);
-                //myDropzone.options.thumbnail.call(myDropzone, mockFile, "https://res.cloudinary.com/dhwlyljdd/image/upload/v1542938632/" + myObj.id);
                 document.getElementById("currentImage").src = "https://res.cloudinary.com/dhwlyljdd/image/upload/v1542938632/" + myObj.id;
+                document.getElementById("inputFile").value = myObj.file;
+                document.getElementById("id1").value = myObj.id;
+                document.getElementById("id2").value = myObj.id;
+                document.getElementById("idOld1").value = myObj.id;
+                document.getElementById("idOld2").value = myObj.id;
 
               }
             });
@@ -101,7 +107,7 @@
         </nav>
 
         <div class="createWrapper">
-            <form id="signupForm" onsubmit="return uploadFile()" action="uploadContent" method="post">
+            <form id="signupForm" onsubmit="return uploadFile()" action="changeContent" method="post">
                 <div class="form-group">
                     <label for="inputTitle">Title</label>
                     <input type="text" class="form-control" id="inputTitle" name="inputTitle" required>
@@ -116,17 +122,25 @@
                         <input type="number" min="1" max="5" class="form-control" id="inputDuration" name="inputDuration" placeholder="Designate number of weeks content will display for" required>
                     </div>
                 </div>
+                <input style="display: none" type="text" id="id1" name="id" />
+                <input style="display: none" type="text" id="idOld1" name="idOld" />
                 <div style="text-align: right;">
                     <button type="submit" class="btn btn-primary" style="margin-top: 22.5rem; width: 10rem; height: 4rem; font-size: 1.6rem;">Submit</button>
                 </div>
                 <div style="opacity: 0;">
-                    <input type="text" id="inputFile" name="inputFile" disabled />
+                    <input type="text" id="inputFile" name="inputFile" />
                 </div>
             </form>
 
-            <br><form action="file-upload" class="dropzone" method="post" id="uploadForm" style="margin-top: -27rem;"></form>
+            <br><form action="file-update" class="dropzone" method="post" id="uploadForm" style="margin-top: -29.5rem;">
+              <input style="display: none" type="text" id="id2" name="id" />
+              <input style="display: none" type="text" id="idOld2" name="idOld" />
+            </form>
 
-            <img id="currentImage" width='150' height='150' />
+            <div class="previewImage">
+              <img id="currentImage" width='150' height='150' style="padding: 5px; border-radius: 3rem;" />
+              <h5>Preview of Current Image</h5>
+            </div>
         </div>
     </body>
 </html>
