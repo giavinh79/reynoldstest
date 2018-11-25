@@ -4,12 +4,58 @@
         <meta charset="utf-8">
         <title>Reynold's Welcome</title>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <link href="https://fonts.googleapis.com/css?family=Montserrat:200,300,400,700,900" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
         <link rel="stylesheet" href="css/edit.css">
+        <script>
+            function updateContentTable(contentList, user) {
+              //Dispaly contentTable
+              if (contentList.length >= 1) {
+                var obj, x, txt = "";
+                txt += "<table class=\"table table-striped\"><thead><tr><th scope=\"col\">Title</th><th scope=\"col\">File</th><th scope=\"col\">Admin Email</th><th scope=\"col\">Admin Name</th><th scope=\"col\">Date</th><th scope=\"col\">Duration</th><th scope=\"col\">Edit</th><th scope=\"col\">Delete</th></tr></thead><tbody>"
+                for (x in contentList) {
+                    txt += "<tr><td>" + contentList[x].title + "</td><td>" + contentList[x].file + "</td><td>" + contentList[x].admin + "</td><td>" + contentList[x].firstName + "</td><td>" +  contentList[x].date + "</td><td>" + contentList[x].duration + "</td>";
+                    if (user.super === 1) {
+                      txt += "<td>" + "<form id=\"deleteForm\" action=\"editContent\" method=\"post\">" + "<input style=\"display: none;\" id=\"id\" name=\"id\" value=\"" + contentList[x].id + "\"></input>" + "<button class=\"btnIcon\" type=\"submit\"><i class=\"fa fa-edit\" style=\"font-size:24px;\"></i></button></form></td><td>" + "<form id=\"deleteForm\" action=\"deleteContent\" method=\"post\">" + "<input style=\"display: none;\" id=\"id\" name=\"id\" value=\"" + contentList[x].id + "\"></input>" + "<button class=\"btnIcon\" type=\"submit\"><i class=\"fa fa-ban\" style=\"font-size:24px; color: red;\"></i></button></form></td></tr>"
+                    } else {
+                      txt += "<td></td><td></td></tr>"
+                    }
+                }
+                txt += "</tbody></table>";
+                document.getElementById("contentTable").innerHTML = txt;
+              }
+            }
+
+            $.ajax({
+                type: 'POST',
+                url: 'contentList',
+                dataType: "json",
+                success: function (data) {
+                    if (data.status != 200) {
+                        window.location.replace("/");
+                    } else {
+                      updateContentTable(data.contentList, data.user);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    window.location.replace("/");
+                }
+            });
+
+            window.history.pushState("", "", '/');
+            $(document).ready(function() {
+              if ('{{messageDelete}}'.charAt(0) != '{') {
+                messageDelete = document.getElementById('verifyMessage');
+                messageDelete.style.display = "block";
+                messageDelete.innerHTML = '{{messageDelete}}';
+              }
+            });
+        </script>
     </head>
     <body>
       <nav class="navbar navbar-default">
@@ -23,6 +69,9 @@
               </ul>
           </div>
       </nav>
-      <h3>Edit</h3>
+      <h2>Edit</h2>
+      <h3 style="text-align: center;">All Content</h3>
+      <p id ="verifyMessage" style="text-align: center; color: green;"></p>
+      <p class="contentTable" id="contentTable"></p>
     </body>
 </html>

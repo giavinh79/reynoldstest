@@ -30,3 +30,8 @@ ul.navbar-nav li:nth-child(5) {
 .createWrapper {
     width: 50%;
 }
+
+.previewImage {
+    margin-left: 200px;
+    margin-top: 20px;
+}
