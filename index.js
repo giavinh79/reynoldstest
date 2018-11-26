@@ -566,6 +566,38 @@ app.post('/deleteAdmin', function(req, res) {
     });
   });
 
+app.post('/content', function(req, res) {
+  var contentList = [];
+  var object = {"identifier":null};
+  MongoClient.connect(url, function(err, db) {
+    var dbo = db.db("reynoldsdb");
+    dbo.collection("content").find({}).toArray(function(err, result) {
+      if (err) throw err;
+      if (result == null || result == "") {
+        //nothing
+      } else {
+        for (var i = 0; i < result.length; i++) {
+            var admin = {
+              role: (result[i].super === 1) ? 'Super Admin' : 'Admin',
+              name: result[i].lastName + ", "+ result[i].firstName,
+              email:result[i].user
+            };
+            listOfAdmins.push(admin);
+        }
+        var admins = {
+            admins: JSON.stringify(listOfAdmins)
+        };
+        fs.readFile(__dirname + '/settings.html', 'utf8', (err, data) => {
+            if (err) throw err;
+            var html = mustache.to_html(data, admins);
+            res.send(html);
+        });
+      }
+      db.close();
+    });
+  });
+});
+
 http.listen(PORT, function(){
     console.log('listening on localhost:80');
 });
