@@ -1,9 +1,4 @@
 const app = require('express')(); //dependencies and modules
-// app.enable('trust proxy');
-// app.set('trust proxy');
-// app.get('trust proxy');
-// console.log(app.get('trust proxy'));
-
 const http = require('http').Server(app);
 const cookieParser = require('cookie-parser');
 const fs = require('fs'); // bring in the file system api
@@ -11,7 +6,7 @@ const mustache = require('mustache'); //{{}}
 const MongoClient = require('mongodb').MongoClient;
 const nodemailer = require('nodemailer');
 const cloudinary = require('cloudinary');
-const multiparty = require('multiparty');
+const multiparty = require('multiparty'); //multi-part form parsing for drag and drop
 
 cloudinary.config({
     cloud_name: 'dhwlyljdd',
@@ -33,6 +28,8 @@ const PORT = process.env.PORT || 80;
 app
   .get('/', (req, res) => res.sendFile(__dirname + '/index.html'))
   .get('/favicon.ico', (req, res) => res.sendFile(__dirname + '/favicon.ico'))
+  .get('/res/noimage.png', (req, res) => res.sendFile(__dirname + '/res/noimage.png'))
+  .get('/res/preloader.gif', (req, res) => res.sendFile(__dirname + '/res/preloader.gif'))
   .get('/create.html', (req, res) => res.sendFile(__dirname + '/create.html'))
   .get('/css/home.css', (req, res) => res.sendFile(__dirname + '/css/home.css'))
   .get('/css/create.css', (req, res) => res.sendFile(__dirname + '/css/create.css'))
@@ -46,11 +43,11 @@ app
   .get('/edit.html', (req, res) => res.sendFile(__dirname + '/edit.html'))
   .get('/css/edit.css', (req, res) => res.sendFile(__dirname + '/css/edit.css'))
   .get('/css/signup.css', (req, res) => res.sendFile(__dirname + '/css/signup.css'));
-//   .get('/loggedin.html', (req, res) => res.sendFile(__dirname + '/loggedin.html'));
-//   .get('/loggedin.html', (req, res) => res.sendFile(__dirname + '/loggedin.html'));
-//   .get('/', function(req, res) {
-//     res.sendFile(__dirname + '/index.html');
-//   })
+
+for (i = 0; i < 47; i++)
+{
+  app.get('/res/weather/'+i+'.png', (req, res) => res.sendFile(__dirname + '/res/weather/'+i+'.png'))
+}   app.get('/res/weather/3200.png', (req, res) => res.sendFile(__dirname + '/res/weather/3200.png'));
 
 const bodyParser = require('body-parser'); // Necessary to get form data with Express
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -299,7 +296,7 @@ app.post('/settingsForUser', function(req, res) {
     if (req.signedCookies.activeUser == null) {
       res.end('{"error" : "Invalid User", "status" : 401}');
     } else {
-      MongoClient.connect(url, function(err, db) {
+      MongoClient.connect(url, { useNewUrlParser: true }, function(err, db) {
         var dbo = db.db("reynoldsdb");
         var query = { verificationCode: req.signedCookies.activeUser };
         dbo.collection("accounts").find(query).toArray(function(err, result) {
@@ -366,7 +363,7 @@ app.post('/emailAdminInvite', function(req, res) {
   }
   function addCodeToDatabase() {
     //check if varCode exists
-    MongoClient.connect(url, function(err, db) {
+    MongoClient.connect(url, { useNewUrlParser: true }, function(err, db) {
       var exists;
       var dbo = db.db("reynoldsdb");
       do {
@@ -395,7 +392,7 @@ app.post('/emailAdminInvite', function(req, res) {
   }
 
   //check if email is already in use
-  MongoClient.connect(url, function(err, db) {
+  MongoClient.connect(url, { useNewUrlParser: true }, function(err, db) {
     var dbo = db.db("reynoldsdb");
     VarCode = makeId();
     var query = { user: req.body.email };
@@ -421,7 +418,7 @@ app.post('/emailAdminInvite', function(req, res) {
 
 app.post('/admins', function(req, res) {
   var listOfAdmins = [];
-  MongoClient.connect(url, function(err, db) {
+  MongoClient.connect(url, { useNewUrlParser: true }, function(err, db) {
     var dbo = db.db("reynoldsdb");
     dbo.collection("accounts").find({}).toArray(function(err, result) {
       if (err) throw err;
@@ -445,7 +442,7 @@ app.post('/admins', function(req, res) {
 
 app.post('/deleteAdmin', function(req, res) {
   var listOfAdmins = [];
-  MongoClient.connect(url, function(err, db) {
+  MongoClient.connect(url, { useNewUrlParser: true }, function(err, db) {
     var dbo = db.db("reynoldsdb");
     var query = { user: req.body.email };
     dbo.collection("accounts").deleteOne(query, function(err, obj) {
@@ -504,7 +501,7 @@ app.post('/deleteAdmin', function(req, res) {
   });
 
   app.post('/updateAccount', function(req, res) {
-    MongoClient.connect(url, function(err, db) {
+    MongoClient.connect(url, { useNewUrlParser: true }, function(err, db) {
       var dbo = db.db("reynoldsdb");
       var query = { user: req.body.email };
       var updating = "nothing";
@@ -561,6 +558,47 @@ app.post('/deleteAdmin', function(req, res) {
       }
     });
   });
+
+//need to check if date+duration is < then current date, if so, delete content from database and cloudinary
+app.post('/content', function(req, res) {
+  var content = "";
+  var date = new Date();
+  var imageDate;
+
+  MongoClient.connect(url, { useNewUrlParser: true }, function(err, db) {
+    var dbo = db.db("reynoldsdb");
+    dbo.collection("content").find({}).toArray(function(err, result) {
+      if (err) throw err;
+      if (result == null || result == "") {
+        //nothing
+      } else {
+        for (var i = 0; i < result.length; i++) {
+          // date.setDate(date.getDate()+result[i].duration*7);
+          imageDate = new Date(result[i].date);
+          imageDate.setDate(imageDate.getDate() + result[i].duration*7);
+          // console.log(parseInt(imageDate.toISOString().substring(0, 10).replace(/-/g, "")));
+          // console.log(parseInt(date.toISOString().substring(0, 10).replace(/-/g, "")));
+          if (parseInt(imageDate.toISOString().substring(0, 10).replace(/-/g, "")) < parseInt(date.toISOString().substring(0, 10).replace(/-/g, ""))) {
+            var query = { id : result[i].id };
+            dbo.collection("content").deleteOne(query, function(err, obj) {
+              if (err) throw err;
+              console.log("Content expired and consequently deleted.");
+              db.close();
+            });
+            continue;
+          }
+          else if (result[i].date.replace(/-/g, "") > parseInt(date.toISOString().substring(0, 10).replace(/-/g, ""))) {
+            // Content to start later
+            continue;
+          }
+          content = content + result[i].id+result[i].date+result[i].duration+"~!~"; //~!~ delimiter
+        }
+        res.send(content);
+      }
+      db.close();
+    });
+  });
+});
 
   app.post('/contentList', function(req, res) {
     MongoClient.connect(url, function(err, db) {
@@ -718,7 +756,6 @@ app.post('/deleteAdmin', function(req, res) {
     });
     return;
   });
-
 
 http.listen(PORT, function(){
     console.log('listening on localhost:80');
