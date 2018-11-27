@@ -13,13 +13,14 @@ ul.navbar-nav li:nth-child(5) {
 }
 
 .settingsSection div {
-  max-width: 30rem;
+  width: 40rem;
   margin: 1rem 0;
   text-align: left;
 }
 
 .settingsSection {
-  padding: 10px;
+  padding: 5px;
+padding-left: 30px;
 }
 
 .adminTable {
@@ -31,4 +32,8 @@ ul.navbar-nav li:nth-child(5) {
     background-color: transparent;
     border: none;
     cursor: pointer;
+}
+
+.h3 {
+  margin-top: 0px;
 }

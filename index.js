@@ -436,14 +436,7 @@ app.post('/admins', function(req, res) {
             };
             listOfAdmins.push(admin);
         }
-        var admins = {
-            admins: JSON.stringify(listOfAdmins)
-        };
-        fs.readFile(__dirname + '/settings.html', 'utf8', (err, data) => {
-            if (err) throw err;
-            var html = mustache.to_html(data, admins);
-            res.send(html);
-        });
+        res.end('{"status" : 200, "adminList": ' + JSON.stringify(listOfAdmins) + ' }');
       }
       db.close();
     });

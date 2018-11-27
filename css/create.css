@@ -32,6 +32,8 @@ ul.navbar-nav li:nth-child(5) {
 }
 
 .previewImage {
-    margin-left: 200px;
-    margin-top: 20px;
+    padding-top: 50px;
+}
+.splitbox {
+    width: 100%;
 }

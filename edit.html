@@ -54,6 +54,24 @@
                 messageDelete.innerHTML = '{{messageDelete}}';
               }
             });
+
+            function logout() {
+              var cookies = document.cookie.split("; ");
+              for (var c = 0; c < cookies.length; c++) {
+                  var d = window.location.hostname.split(".");
+                  while (d.length > 0) {
+                      var cookieBase = encodeURIComponent(cookies[c].split(";")[0].split("=")[0]) + '=; expires=Thu, 01-Jan-1970 00:00:01 GMT; domain=' + d.join('.') + ' ;path=';
+                      var p = location.pathname.split('/');
+                      document.cookie = cookieBase + '/';
+                      while (p.length > 0) {
+                          document.cookie = cookieBase + p.join('/');
+                          p.pop();
+                      };
+                      d.shift();
+                  }
+              }
+              return true;
+            }
         </script>
     </head>
     <body>
@@ -64,11 +82,10 @@
                 <li><a href="create.html">Create</a></li>
                 <li class="active"><a href="edit.html">Edit</a></li>
                 <li><a href="settings.html">Settings</a></li>
-                <li id="logout"><a href="#">Logout</a></li>
+                <li id="logout"><a href='/' onclick='return logout()'>Logout</a></li>
               </ul>
           </div>
       </nav>
-      <h2>Edit</h2>
       <h3 style="text-align: center;">All Content</h3>
       <p id ="verifyMessage" style="text-align: center; color: green;"></p>
       <p class="contentTable" id="contentTable"></p>
