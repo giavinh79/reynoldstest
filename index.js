@@ -173,12 +173,17 @@ app.post('/registerAccount', function(req, res) {
 
     function createAccount() {
         var myobj = { user: req.body.inputEmail, pass: req.body.inputPassword1, firstName: req.body.firstName, lastName: req.body.lastName, super: 0, verificationCode: req.body.inputCode};
+       
+      MongoClient.connect(url, { useNewUrlParser: true }, function(err, db) {
+        if (err) throw err;
+        var dbo = db.db("reynoldsdb");
         dbo.collection("accounts").insertOne(myobj, function(err, res)
         {
             if (err) throw err;
             if (!err) console.log("Account successfully created.");
         });
         db.close();
+      });
     }
 
     function doneCreate() {
@@ -217,8 +222,8 @@ app.post('/registerAccount', function(req, res) {
             {
                 console.log("Invalid verification code inputted during account creation.");
                 error = true;
-                doneCreate();
             }
+            doneCreate();
         });
     });
 });
@@ -238,8 +243,7 @@ app.post('/uploadContent', function(req, res) {
     var username= "";
     var adminName = "";
     MongoClient.connect(url, { useNewUrlParser: true }, function(err, db) {
-        var dbo = db.db("reynoldsdb");
-
+      var dbo = db.db("reynoldsdb");
         function createContent()
         {
             var myobj = { title: req.body.inputTitle, file: req.body.inputFile, date: req.body.inputDate, duration: req.body.inputDuration, admin: username, firstName: adminName, id: req.body.id};

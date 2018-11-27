@@ -26,21 +26,21 @@
             message.style.display = "block";
             message.innerHTML = '{{message}}';
             var userInput = document.getElementById('username');
-            if (document.cookie.indexOf(";") < 0 && document.cookie.includes("invalidLogin"))
-            {
-              userInput.value = decodeURIComponent(document.cookie.substring(13, document.cookie.length));
-            }
-            else
-            {
-              if (document.cookie.match('invalidLogin=.*?(?:;)') == null)
-              {
-                userInput.value = decodeURIComponent(document.cookie.substring(document.cookie.indexOf("invalidLogin=")+13, document.cookie.length));
-              }
-              else
-              {
-                userInput.value = decodeURIComponent(document.cookie.match('invalidLogin=.*?(?:;)')[0].substring(13, document.cookie.length-1));
-              }
-            }
+            // if (document.cookie.indexOf(";") < 0 && document.cookie.includes("invalidLogin"))
+            // {
+            //   userInput.value = decodeURIComponent(document.cookie.substring(13, document.cookie.length));
+            // }
+            // else
+            // {
+            //   if (document.cookie.match('invalidLogin=.*?(?:;)') == null)
+            //   {
+            //     userInput.value = decodeURIComponent(document.cookie.substring(document.cookie.indexOf("invalidLogin=")+13, document.cookie.length));
+            //   }
+            //   else
+            //   {
+            //     userInput.value = decodeURIComponent(document.cookie.match('invalidLogin=.*?(?:;)')[0].substring(13, document.cookie.length-1));
+            //   }
+            // }
           }
 
           if ('{{messageTwo}}'.charAt(0) != '{')
