@@ -30,3 +30,10 @@ ul.navbar-nav li:nth-child(5) {
 .createWrapper {
     width: 50%;
 }
+
+.previewImage {
+    padding-top: 50px;
+}
+.splitbox {
+    width: 100%;
+}

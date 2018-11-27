@@ -11,3 +11,13 @@ ul.navbar-nav li:nth-child(5) {
     margin-left: auto;
     float: right;
 }
+
+.contentTable {
+  padding: 0 80px 0 80px;
+}
+
+.btnIcon {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}

@@ -41,7 +41,7 @@
 
                 if (dd < 10) {
                     dd = '0' + dd;
-                } 
+                }
 
                 if (mm < 10) {
                     mm = '0' + mm;
@@ -58,25 +58,22 @@
                     maxFiles: 1,
                     acceptedFiles: 'image/*',
                     enqueueForUpload: true,
+                    addRemoveLinks: true
                 });
             });
 
             function uploadFile() {
+                //Get unique Id
+                var id = (new Date).getTime();
+                document.getElementById("id1").value = id;
+                document.getElementById("id2").value = id;
+
+                //File Shit
                 var count = myDropzone.files.length;
                 var fileElement = document.getElementById('inputFile');
-
                 if (count > 0)
                 {
                     fileElement.value = myDropzone.files[0].name;
-                    // var promise = new Promise(function(resolve, reject) {
-                    //     //async task
-                    //     if (/* everything turned out fine */) {
-                    //         resolve("Stuff worked!");
-                    //     }
-                    //     else {
-                    //         reject(Error("It broke"));
-                    //     }
-                    // });
                     myDropzone.processQueue();
                     return true;
                 }
@@ -135,16 +132,19 @@
                         <input type="number" min="1" max="5" class="form-control" id="inputDuration" name="inputDuration" placeholder="Designate number of weeks content will display for" required>
                     </div>
                 </div>
+                <input style="display: none" type="text" id="id1" name="id" />
                 <div style="text-align: right;">
-                    <button type="submit" class="btn btn-primary" style="margin-top: 22.5rem; width: 10rem; height: 4rem; font-size: 1.6rem;">Submit</button>
+                    <button type="submit" class="btn btn-primary" style="margin-top: 24.5rem; width: 10rem; height: 4rem; font-size: 1.6rem;">Submit</button>
                 </div>
                 <div style="opacity: 0;">
-                    <input type="text" id="inputFile" name="inputFile" disabled />
+                    <input type="text" id="inputFile" name="inputFile" />
                 </div>
             </form>
 
-            <br><form action="file-upload" class="dropzone" method="post" id="uploadForm" style="margin-top: -29.5rem;"></form>
+            <br>
+            <form action="file-upload" class="dropzone" method="post" id="uploadForm" style="margin-top: -31.5rem;">
+              <input style="display: none" type="text" id="id2" name="id" />
+            </form>
         </div>
     </body>
 </html>
-    

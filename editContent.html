@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title>Reynold's Welcome</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+        <!-- Bootstrap -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+        <script src="lib/dropzone.js"></script>
+        <link rel="stylesheet" href="css/dropzone.css">
+
+        <link rel="stylesheet" href="css/create.css">
+        <script>
+            var myDropzone;
+            Dropzone.autoDiscover = false;
+            $(document).ready(function() {
+                // $("#my-awesome-dropzone").dropzone();
+                var today = new Date();
+                var dd = today.getDate();
+                var mm = today.getMonth()+1; //January is 0!
+                var yyyy = today.getFullYear();
+
+                if (dd < 10) {
+                    dd = '0' + dd;
+                }
+
+                if (mm < 10) {
+                    mm = '0' + mm;
+                }
+
+                today = yyyy + '-' + mm + '-' + dd;
+                $('#datePicker').attr("value", today);
+                $('#datePicker').attr("min", today);
+
+                myDropzone = new Dropzone("#uploadForm", {
+                    url: "file-update",
+                    maxFilesize:10, // MB
+                    autoProcessQueue: false,
+                    maxFiles: 1,
+                    acceptedFiles: 'image/*',
+                    enqueueForUpload: true,
+                    addRemoveLinks: true,
+                    dictDefaultMessage : "Upload to change file"
+                });
+            });
+
+            function uploadFile() {
+                var count = myDropzone.files.length;
+                var fileElement = document.getElementById('inputFile');
+                if (count > 0)
+                {
+                  //Get unique Id
+                  var id = (new Date).getTime();
+                  document.getElementById("id1").value = id;
+                  document.getElementById("id2").value = id;
+                  fileElement.value = myDropzone.files[0].name;
+                  myDropzone.processQueue();
+                  return true;
+                }
+                else
+                {
+                  return true;
+                }
+
+            }
+
+            $(document).ready(function() {
+              if ('{{content}}'.charAt(1) != '{') {
+                var content = '{{content}}';
+                var myObj = JSON.parse(content.replace(/&quot;/g,'"'));
+
+                //Each Content Prop
+                var title = myObj.title;
+                document.getElementById("inputTitle").value = title;
+                var datePicker = myObj.date;
+                document.getElementById("datePicker").value = datePicker;
+                document.getElementById("datePicker").min = datePicker;
+                var inputDuration = myObj.duration;
+                document.getElementById("inputDuration").value = inputDuration;
+                document.getElementById("currentImage").src = "https://res.cloudinary.com/dhwlyljdd/image/upload/v1542938632/" + myObj.id;
+                document.getElementById("inputFile").value = myObj.file;
+                document.getElementById("id1").value = myObj.id;
+                document.getElementById("id2").value = myObj.id;
+                document.getElementById("idOld1").value = myObj.id;
+                document.getElementById("idOld2").value = myObj.id;
+
+              }
+            });
+
+            function logout() {
+              var cookies = document.cookie.split("; ");
+              for (var c = 0; c < cookies.length; c++) {
+                  var d = window.location.hostname.split(".");
+                  while (d.length > 0) {
+                      var cookieBase = encodeURIComponent(cookies[c].split(";")[0].split("=")[0]) + '=; expires=Thu, 01-Jan-1970 00:00:01 GMT; domain=' + d.join('.') + ' ;path=';
+                      var p = location.pathname.split('/');
+                      document.cookie = cookieBase + '/';
+                      while (p.length > 0) {
+                          document.cookie = cookieBase + p.join('/');
+                          p.pop();
+                      };
+                      d.shift();
+                  }
+              }
+              return true;
+            }
+        </script>
+    </head>
+    <body>
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <ul class="nav navbar-nav">
+                    <li><a href="loggedin.html" data-toggle="tab">View</a></li>
+                    <li><a href="create.html">Create</a></li>
+                    <li class="active"><a href="edit.html">Edit</a></li>
+                    <li><a href="settings.html">Settings</a></li>
+                    <li id="logout"><a href='/' onclick='return logout()'>Logout</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <div class="splitbox">
+            <div class="createWrapper" style="float: left;">
+                <form id="signupForm" onsubmit="return uploadFile()" action="changeContent" method="post">
+                    <div class="form-group">
+                        <label for="inputTitle">Title</label>
+                        <input type="text" class="form-control" id="inputTitle" name="inputTitle" required>
+                    </div>
+                    <div class="form-group" style="display: flex;">
+                        <div style="flex: 1; padding-right: 2rem;">
+                            <label for="start">Start Date</label><br>
+                            <input id="datePicker" name="inputDate" type='date' class="form-control" required />
+                        </div>
+                        <div style="flex: 4;">
+                            <label for="inputDuration">Duration</label>
+                            <input type="number" min="1" max="5" class="form-control" id="inputDuration" name="inputDuration" placeholder="Designate number of weeks content will display for" required>
+                        </div>
+                    </div>
+                    <input style="display: none" type="text" id="id1" name="id" />
+                    <input style="display: none" type="text" id="idOld1" name="idOld" />
+                    <div style="text-align: right;">
+                        <button type="submit" class="btn btn-primary" style="margin-top: 24.5rem; width: 10rem; height: 4rem; font-size: 1.6rem;">Submit</button>
+                    </div>
+                    <div style="opacity: 0;">
+                        <input type="text" id="inputFile" name="inputFile" />
+                    </div>
+                </form>
+
+                <br><form action="file-update" class="dropzone" method="post" id="uploadForm" style="margin-top: -31.5rem;">
+                  <input style="display: none" type="text" id="id2" name="id" />
+                  <input style="display: none" type="text" id="idOld2" name="idOld" />
+                </form>
+            </div>
+            <div class="previewImage">
+              <img id="currentImage" width='300' height='300' style="padding: 5px; border-radius: 3rem; object-fit: cover" />
+              <h4 style="padding-left: 820px;">Preview of Current Image</h4>
+            </div>
+        </div>
+    </body>
+</html>

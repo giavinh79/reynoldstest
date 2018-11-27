@@ -9,9 +9,9 @@ const cloudinary = require('cloudinary');
 const multiparty = require('multiparty'); //multi-part form parsing for drag and drop
 
 cloudinary.config({
-    cloud_name: 'dhwlyljdd', 
-    api_key: '751525171794449', 
-    api_secret: 'NHBYucD3tJPm6AOPRa0ZAeptoKc' 
+    cloud_name: 'dhwlyljdd',
+    api_key: '751525171794449',
+    api_secret: 'NHBYucD3tJPm6AOPRa0ZAeptoKc'
 });
 
 app.use(cookieParser("375025"));
@@ -192,11 +192,11 @@ app.post('/registerAccount', function(req, res) {
         {
             createAccount();
             console.log("howtf")
-    
+
             var success = {
               messageTwo: "Account successfully created."
             };
-  
+
             fs.readFile(__dirname + '/index.html', 'utf8', (err, data) => {
                 if (err) throw err;
                 var html = mustache.to_html(data, success);
@@ -224,9 +224,6 @@ app.post('/registerAccount', function(req, res) {
 });
 
 app.post('/verifyuser', function(req, res) {
-    console.log("hiii");
-    console.log(req.cookies);
-    console.log(req.signedCookies);
     if (req.signedCookies.activeUser == null)
     {
         res.end('{"error" : "Invalid User", "status" : 401}');
@@ -238,10 +235,6 @@ app.post('/verifyuser', function(req, res) {
 });
 
 app.post('/uploadContent', function(req, res) {
-    console.log(req.body.inputTitle);
-    console.log(req.body.inputDate);
-    console.log(req.body.inputDuration);
-    console.log(req.signedCookies);
     var username= "";
     var adminName = "";
     MongoClient.connect(url, { useNewUrlParser: true }, function(err, db) {
@@ -249,8 +242,8 @@ app.post('/uploadContent', function(req, res) {
 
         function createContent()
         {
-            var myobj = { title: req.body.inputTitle, file: req.body.inputFile, date: req.body.inputDate, duration: req.body.inputDuration, admin: username, firstName: adminName, id: null};
-            dbo.collection("content").insertOne(myobj, function(err, res) 
+            var myobj = { title: req.body.inputTitle, file: req.body.inputFile, date: req.body.inputDate, duration: req.body.inputDuration, admin: username, firstName: adminName, id: req.body.id};
+            dbo.collection("content").insertOne(myobj, function(err, res)
             {
                 if (err) throw err;
             });
@@ -284,12 +277,18 @@ app.post('/uploadContent', function(req, res) {
 
 app.post('/file-upload', function(req, res) {
     var form = new multiparty.Form();
-    form.parse(req, function(err, fields, files) {
-        console.log("hiii");
-        console.log(files.file[0].headers);
-        cloudinary.v2.uploader.upload(files.file[0].path, 
-        function(error, result) {console.log(result, error)});
-    });
+
+      form.parse(req, function(err, fields, files) {
+        if (files) {
+          cloudinary.v2.uploader.upload(files.file[0].path,
+            {public_id: "" + fields.id},
+            function(error, result) {console.log(result, error)}
+          );
+        } else {
+          console.log("Image Failed to upload");
+        }
+      });
+
     return;
 });
 
@@ -303,7 +302,7 @@ app.post('/settingsForUser', function(req, res) {
         dbo.collection("accounts").find(query).toArray(function(err, result) {
           if (err) throw err;
           if (result == null || result == "") {
-            //nothing
+            res.end('{"error" : "Invalid User", "status" : 401}');
           } else {
               var admin = {
                 super: result[0].super,
@@ -434,14 +433,7 @@ app.post('/admins', function(req, res) {
             };
             listOfAdmins.push(admin);
         }
-        var admins = {
-            admins: JSON.stringify(listOfAdmins)
-        };
-        fs.readFile(__dirname + '/settings.html', 'utf8', (err, data) => {
-            if (err) throw err;
-            var html = mustache.to_html(data, admins);
-            res.send(html);
-        });
+        res.end('{"status" : 200, "adminList": ' + JSON.stringify(listOfAdmins) + ' }');
       }
       db.close();
     });
@@ -567,7 +559,7 @@ app.post('/deleteAdmin', function(req, res) {
     });
   });
 
-  //need to check if date+duration is < then current date, if so, delete content from database and cloudinary
+//need to check if date+duration is < then current date, if so, delete content from database and cloudinary
 app.post('/content', function(req, res) {
   var content = "";
   var date = new Date();
@@ -607,6 +599,163 @@ app.post('/content', function(req, res) {
     });
   });
 });
+
+  app.post('/contentList', function(req, res) {
+    MongoClient.connect(url, function(err, db) {
+      var dbo = db.db("reynoldsdb");
+      var contentList;
+
+      function getUserInfo() {
+        var query = { verificationCode: req.signedCookies.activeUser };
+        dbo.collection("accounts").find(query).toArray(function(err, result) {
+          if (err) throw err;
+          if (result == null || result == "") {
+            res.end('{"error" : "Invalid User", "status" : 401}');
+          } else {
+              var admin = {
+                super: result[0].super,
+                name: result[0].lastName + ", "+ result[0].firstName,
+                admin: result[0].user
+              };
+              res.end('{"status" : 200, "contentList": ' + JSON.stringify(contentList) + ', "user": ' + JSON.stringify(admin) +' }');
+          }
+          db.close();
+        });
+      }
+
+      dbo.collection("content").find({}).toArray(function(err, result) {
+        if (err) throw err;
+        if (result == null || result == "") {
+          res.end('{"error" : "No Content Found", "status" : 401}');
+        } else {
+          contentList = result;
+          getUserInfo();
+        }
+      });
+    });
+  });
+
+  app.post('/deleteContent', function(req, res) {
+    MongoClient.connect(url, function(err, db) {
+      var dbo = db.db("reynoldsdb");
+      var query = { id: req.body.id };
+      dbo.collection("content").deleteOne(query, function(err, obj) {
+        if (err) throw err;
+        cloudinary.v2.uploader.destroy("" + req.body.id,
+          function(error, result) {
+            console.log(result, error);
+          }
+        );
+        console.log("Content: " + req.body.id + ", deleted");
+        db.close();
+        var messageDelete = {
+            messageDelete: "Content was successfully deleted"
+        };
+        fs.readFile(__dirname + '/edit.html', 'utf8', (err, data) => {
+            if (err) throw err;
+            var html = mustache.to_html(data, messageDelete);
+            res.send(html);
+        });
+      });
+    });
+  });
+
+  app.post('/editContent', function(req, res) {
+    MongoClient.connect(url, function(err, db) {
+      var dbo = db.db("reynoldsdb");
+      var query = { id: req.body.id };
+      dbo.collection("content").find(query).toArray(function(err, result) {
+        if (err) throw err;
+        if (result == null || result == "") {
+          res.end('{"error" : "No Content Found", "status" : 401}');
+        } else {
+          var content = {
+              content: JSON.stringify(result[0])
+          };
+          fs.readFile(__dirname + '/editContent.html', 'utf8', (err, data) => {
+              if (err) throw err;
+              var html = mustache.to_html(data, content);
+              res.send(html);
+          });
+        }
+      });
+    });
+  });
+
+  app.post('/changeContent', function(req, res) {
+      var username= "";
+      var adminName = "";
+      MongoClient.connect(url, { useNewUrlParser: true }, function(err, db) {
+          var dbo = db.db("reynoldsdb");
+
+          function changeContent()
+          {
+              var query = { id: req.body.idOld };
+              if (req.body.idOld === req.body.id) {
+                var newvalues = { title: req.body.inputTitle, date: req.body.inputDate, duration: req.body.inputDuration, file:req.body.inputFile};
+              } else {
+                var newvalues = { title: req.body.inputTitle, date: req.body.inputDate, duration: req.body.inputDuration, file:req.body.inputFile, id:req.body.id};
+              }
+              dbo.collection("content").updateOne(query, {$set:newvalues}, function(err, response) {
+                  if (err) throw err;
+              });
+
+              db.close();
+              res.redirect('/edit.html');
+          }
+          console.log(req.signedCookies.activeUser);
+          var query = { verificationCode: req.signedCookies.activeUser };
+          dbo.collection("accounts").find(query).toArray(function(err, result) {
+              if (err) throw err;
+              if (result == null || result == "") {
+                  console.log("why the frik");
+                  var fail = {
+                      messageTwo: "Invalid verification code."
+                  };
+                  db.close();
+                  fs.readFile(__dirname + '/index.html', 'utf8', (err, data) => {
+                      if (err) throw err;
+                      var html = mustache.to_html(data, fail);
+                      res.send(html);
+                  });
+              } else {
+                  username = result[0].user;
+                  adminName = result[0].firstName;
+                  changeContent();
+              }
+          });
+      });
+  });
+
+  app.post('/file-update', function(req, res) {
+    var publicId, publicIdOld, path;
+
+    function upload() {
+      cloudinary.v2.uploader.upload(path, {public_id: publicId},
+        function(error, result) {
+          console.log(result, error);
+          deleteI();
+        }
+      );
+    }
+
+    function deleteI() {
+      cloudinary.v2.uploader.destroy(publicIdOld,
+        function(error, result) {
+          console.log(result, error);
+        }
+      );
+    }
+
+    var form = new multiparty.Form();
+    form.parse(req, function(err, fields, files) {
+        path = files.file[0].path;
+        publicId = "" + fields.id;
+        publicIdOld  = "" + fields.idOld;
+        upload();
+    });
+    return;
+  });
 
 http.listen(PORT, function(){
     console.log('listening on localhost:80');
