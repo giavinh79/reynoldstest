@@ -29,6 +29,21 @@
             });
             var user;
 
+            function updateAdminTable(myObj) {
+              var obj, data, myObj, x, txt = "";
+              txt += "<table class=\"adminTable table table-striped\"><thead><tr><th scope=\"col\">Role</th><th scope=\"col\">Name</th><th scope=\"col\">Email</th><th scope=\"col\">Delete</th></tr></thead><tbody>"
+              for (x in myObj) {
+                  txt += "<tr><td>" + myObj[x].role + "</td><td>" + myObj[x].name + "</td><td>" + myObj[x].email + "</td>";
+                  if (myObj[x].role === "Admin") {
+                    txt += "<td>" + "<form id=\"deleteForm\" action=\"deleteAdmin\" method=\"post\">" + "<input style=\"display: none;\" id=\"email\" name=\"email\" value=\"" + myObj[x].email + "\"></input>" + "<button class=\"btnDelete\" type=\"submit\"><i class=\"fa fa-ban\" style=\"font-size:24px; color: red;\"></i></button></form></td></tr>"
+                  } else {
+                    txt += "<td></td></tr>"
+                  }
+              }
+              txt += "</tbody></table>";
+              document.getElementById("adminTable").innerHTML = txt;
+            }
+
             function updateUser() {
               //Display Unique User Info
               if (user) {
@@ -43,6 +58,22 @@
                   superControls = document.getElementById('superControls');
                   superControls.style.display = "block";
                 }
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'admins',
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.status != 200) {
+                            window.location.replace("/");
+                        } else {
+                          updateAdminTable(data.adminList);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        window.location.replace("/");
+                    }
+                });
 
               }
             }
@@ -136,7 +167,6 @@
               </ul>
           </div>
       </nav>
-      <h2>Settings</h2>
       <div class="settingsSection">
         <h3>Account</h3>
         <form id="nameForm" style="display: flex;">
@@ -167,21 +197,18 @@
       <div id="superControls" style="display: none;">
         <div class="settingsSection">
           <h3>Permissions</h3>
-          <form id="emailForm" action="emailAdminInvite" method="post">
+          <form id="emailForm" action="emailAdminInvite" method="post" style="display: flex;">
             <div class="input-group">
               <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
               <input id="email" type="text" class="form-control" name="email" placeholder="Email" required>
             </div>
-            <button type="submit" class="btn btn-primary" style="min-width: 300px;">Add Admin</button>
-            <p id ="verifyMessage" style="color: green;"></p>
+            <button type="submit" class="btn btn-primary" style="margin: 10px; min-width: 150px;">Add Admin</button>
+            <p id ="verifyMessage" style="color: green; padding-top: 17px;"></p>
           </form>
         </div>
 
         <div class="settingsSection">
-          <h4>Admins</h4>
-          <form id="AdminForm" action="admins" method="post">
-            <button type="submit" class="btn btn-primary" style="min-width: 300px;">View Admins</button>
-          </form>
+          <h3>Admins</h3>
           <p id ="verifyMessageDel" style="color: green;"></p>
           <p id="adminTable"></p>
         </div>
