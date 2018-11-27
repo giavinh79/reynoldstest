@@ -29,13 +29,17 @@
             });
             var user;
 
+            function deleteAd() {
+              return window.confirm("Are you sure you want to delete?");
+            }
+
             function updateAdminTable(myObj) {
               var obj, data, myObj, x, txt = "";
               txt += "<table class=\"adminTable table table-striped\"><thead><tr><th scope=\"col\">Role</th><th scope=\"col\">Name</th><th scope=\"col\">Email</th><th scope=\"col\">Delete</th></tr></thead><tbody>"
               for (x in myObj) {
                   txt += "<tr><td>" + myObj[x].role + "</td><td>" + myObj[x].name + "</td><td>" + myObj[x].email + "</td>";
                   if (myObj[x].role === "Admin") {
-                    txt += "<td>" + "<form id=\"deleteForm\" action=\"deleteAdmin\" method=\"post\">" + "<input style=\"display: none;\" id=\"email\" name=\"email\" value=\"" + myObj[x].email + "\"></input>" + "<button class=\"btnDelete\" type=\"submit\"><i class=\"fa fa-ban\" style=\"font-size:24px; color: red;\"></i></button></form></td></tr>"
+                    txt += "<td>" + "<form id=\"deleteForm\" onsubmit=\"return deleteAd()\" action=\"deleteAdmin\" method=\"post\">" + "<input style=\"display: none;\" id=\"email\" name=\"email\" value=\"" + myObj[x].email + "\"></input>" + "<button class=\"btnDelete\" type=\"submit\"><i class=\"fa fa-ban\" style=\"font-size:24px; color: red;\"></i></button></form></td></tr>"
                   } else {
                     txt += "<td></td></tr>"
                   }
