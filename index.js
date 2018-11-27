@@ -28,7 +28,8 @@ const PORT = process.env.PORT || 80;
 app
   .get('/', (req, res) => res.sendFile(__dirname + '/index.html'))
   .get('/favicon.ico', (req, res) => res.sendFile(__dirname + '/favicon.ico'))
-  .get('/res/reynolds.png', (req, res) => res.sendFile(__dirname + '/res/reynolds.png'))
+  .get('/res/noimage.png', (req, res) => res.sendFile(__dirname + '/res/noimage.png'))
+  .get('/res/preloader.gif', (req, res) => res.sendFile(__dirname + '/res/preloader.gif'))
   .get('/create.html', (req, res) => res.sendFile(__dirname + '/create.html'))
   .get('/css/home.css', (req, res) => res.sendFile(__dirname + '/css/home.css'))
   .get('/css/create.css', (req, res) => res.sendFile(__dirname + '/css/create.css'))
@@ -296,7 +297,7 @@ app.post('/settingsForUser', function(req, res) {
     if (req.signedCookies.activeUser == null) {
       res.end('{"error" : "Invalid User", "status" : 401}');
     } else {
-      MongoClient.connect(url, function(err, db) {
+      MongoClient.connect(url, { useNewUrlParser: true }, function(err, db) {
         var dbo = db.db("reynoldsdb");
         var query = { verificationCode: req.signedCookies.activeUser };
         dbo.collection("accounts").find(query).toArray(function(err, result) {
@@ -363,7 +364,7 @@ app.post('/emailAdminInvite', function(req, res) {
   }
   function addCodeToDatabase() {
     //check if varCode exists
-    MongoClient.connect(url, function(err, db) {
+    MongoClient.connect(url, { useNewUrlParser: true }, function(err, db) {
       var exists;
       var dbo = db.db("reynoldsdb");
       do {
@@ -392,7 +393,7 @@ app.post('/emailAdminInvite', function(req, res) {
   }
 
   //check if email is already in use
-  MongoClient.connect(url, function(err, db) {
+  MongoClient.connect(url, { useNewUrlParser: true }, function(err, db) {
     var dbo = db.db("reynoldsdb");
     VarCode = makeId();
     var query = { user: req.body.email };
@@ -418,7 +419,7 @@ app.post('/emailAdminInvite', function(req, res) {
 
 app.post('/admins', function(req, res) {
   var listOfAdmins = [];
-  MongoClient.connect(url, function(err, db) {
+  MongoClient.connect(url, { useNewUrlParser: true }, function(err, db) {
     var dbo = db.db("reynoldsdb");
     dbo.collection("accounts").find({}).toArray(function(err, result) {
       if (err) throw err;
@@ -449,7 +450,7 @@ app.post('/admins', function(req, res) {
 
 app.post('/deleteAdmin', function(req, res) {
   var listOfAdmins = [];
-  MongoClient.connect(url, function(err, db) {
+  MongoClient.connect(url, { useNewUrlParser: true }, function(err, db) {
     var dbo = db.db("reynoldsdb");
     var query = { user: req.body.email };
     dbo.collection("accounts").deleteOne(query, function(err, obj) {
@@ -508,7 +509,7 @@ app.post('/deleteAdmin', function(req, res) {
   });
 
   app.post('/updateAccount', function(req, res) {
-    MongoClient.connect(url, function(err, db) {
+    MongoClient.connect(url, { useNewUrlParser: true }, function(err, db) {
       var dbo = db.db("reynoldsdb");
       var query = { user: req.body.email };
       var updating = "nothing";
@@ -566,10 +567,13 @@ app.post('/deleteAdmin', function(req, res) {
     });
   });
 
+  //need to check if date+duration is < then current date, if so, delete content from database and cloudinary
 app.post('/content', function(req, res) {
-  var contentList = [];
-  var object = {"identifier":null};
-  MongoClient.connect(url, function(err, db) {
+  var content = "";
+  var date = new Date();
+  var imageDate;
+
+  MongoClient.connect(url, { useNewUrlParser: true }, function(err, db) {
     var dbo = db.db("reynoldsdb");
     dbo.collection("content").find({}).toArray(function(err, result) {
       if (err) throw err;
@@ -577,21 +581,27 @@ app.post('/content', function(req, res) {
         //nothing
       } else {
         for (var i = 0; i < result.length; i++) {
-            var admin = {
-              role: (result[i].super === 1) ? 'Super Admin' : 'Admin',
-              name: result[i].lastName + ", "+ result[i].firstName,
-              email:result[i].user
-            };
-            listOfAdmins.push(admin);
+          // date.setDate(date.getDate()+result[i].duration*7);
+          imageDate = new Date(result[i].date);
+          imageDate.setDate(imageDate.getDate() + result[i].duration*7);
+          // console.log(parseInt(imageDate.toISOString().substring(0, 10).replace(/-/g, "")));
+          // console.log(parseInt(date.toISOString().substring(0, 10).replace(/-/g, "")));
+          if (parseInt(imageDate.toISOString().substring(0, 10).replace(/-/g, "")) < parseInt(date.toISOString().substring(0, 10).replace(/-/g, ""))) {
+            var query = { id : result[i].id };
+            dbo.collection("content").deleteOne(query, function(err, obj) {
+              if (err) throw err;
+              console.log("Content expired and consequently deleted.");
+              db.close();
+            });
+            continue;
+          }
+          else if (result[i].date.replace(/-/g, "") > parseInt(date.toISOString().substring(0, 10).replace(/-/g, ""))) {
+            // Content to start later
+            continue;
+          }
+          content = content + result[i].id+result[i].date+result[i].duration+"~!~"; //~!~ delimiter
         }
-        var admins = {
-            admins: JSON.stringify(listOfAdmins)
-        };
-        fs.readFile(__dirname + '/settings.html', 'utf8', (err, data) => {
-            if (err) throw err;
-            var html = mustache.to_html(data, admins);
-            res.send(html);
-        });
+        res.send(content);
       }
       db.close();
     });

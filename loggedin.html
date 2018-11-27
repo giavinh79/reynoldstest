@@ -46,23 +46,12 @@
                 }
             });
 
-            // $.ajax({ //Verifies whether client is a logged in user, if not, returns to homepage
-            //     type: 'POST',
-            //     url: 'verifyuser',
-            //     dataType: "json",
-            //     success: function (data) {
-            //         if (data.status != 200)
-            //         {
-            //             window.location.replace("/");
-            //         }
-            //     },
-            //     error: function (xhr, status, error) {
-            //         window.location.replace("/");
-            //     }
-            // });
-
             window.history.pushState("", "", '/loggedin.html');
             $(document).ready(function() {
+                preloaderFadeOutTime = 800;
+                var preloader = $('.preloader-wrapper');
+                preloader.delay(400).fadeOut(preloaderFadeOutTime);
+
                 if (''.charAt(0) != '{')
                 {
                 startTime();
@@ -188,11 +177,58 @@
                     document.getElementById("time").innerHTML = weekdayStr + " " + monthStr + " " + date + type+ " " +year+ "<br>" +  hour + ":" + minutes + ":" + seconds + " " + centralTime;
                     let clock = setTimeout(startTime,500);
                 }
+
                 function checkTime(i)
                 {
                     if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
                         return i;
                 }
+
+                var res;
+                var imageData;
+                var count = 0;
+
+                $.ajax({ //Verifies whether client is a logged in user, if not, returns to homepage
+                    type: 'POST',
+                    url: 'content',
+                    dataType: "text",
+                    success: function (data) {
+                        res = data.replace(/-/g, "").split("~!~");
+                        res = res.slice(0, res.length-1);
+                        imageURL = "https://res.cloudinary.com/dhwlyljdd/image/upload/v1542938632/" + res[res.length-1].substring(0, res[res.length-1].length-9);
+                        $('.rightPane').css('background-image', 'url("'+ imageURL +'")');
+                        count = 0;
+                    },
+                    error: function (xhr, status, error) {
+                        console.log(error);
+                    }
+                });
+
+                setInterval(function() {
+                        if (res[count] == null) count = 0;
+                        imageURL = "https://res.cloudinary.com/dhwlyljdd/image/upload/v1542938632/" + res[count].substring(0, res[count].length-9);
+                        $('.rightPane').css('background-image', 'url("'+ imageURL +'")');
+                        count++;
+                    // }
+                }, 5000);
+
+                setInterval(function () {
+                    $.ajax({ //Verifies whether client is a logged in user, if not, returns to homepage
+                        type: 'POST',
+                        url: 'content',
+                        dataType: "text",
+                        success: function (data) {
+                            res = data.replace(/-/g, "").split("~!~");
+                            res = res.slice(0, res.length-1);
+                            imageURL = "https://res.cloudinary.com/dhwlyljdd/image/upload/v1542938632/" + res[res.length-1].substring(0, res[res.length-1].length-9);
+                            $('.rightPane').css('background-image', 'url("'+ imageURL +'")');
+                            count = 0;
+                        },
+                        error: function (xhr, status, error) {
+                            console.log(error);
+                        }
+                    });
+                }, 60000);
             });
 
             function logout() {
@@ -215,6 +251,9 @@
         </script>
     </head>
     <body>
+      <div class="preloader-wrapper">  
+      </div>
+
       <div class="wrapper">
             <nav class="navbar navbar-default">
                 <div class="container-fluid">
@@ -246,7 +285,7 @@
                 </div>
 
                 <div class="rightPane">
-                    <h1>Content Placeholder</h1>
+                    <!-- <h1>Content Placeholder</h1> -->
                 </div>
             </div>
         </div>

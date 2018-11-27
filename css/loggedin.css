@@ -69,7 +69,12 @@ h2 {
 
 .rightPane {
     padding: 1rem;
-    background-color: lightblue;
+    background-image: url('../res/noimage.png');
+    background-color: black;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    object-fit: contain;
     flex: 5;
 }
 
@@ -99,27 +104,16 @@ h2 {
     padding: 0 2rem;
 }
 
-
-
-/* .item1{
-    grid-area: header;
-}
-.item2{
-    grid-area: menu;
-}
-.item3{
-    grid-area: main;
-}
-.grid-layout {
-    display: grid;
-    grid-template-areas: "header main main main main" "header main main main main" "header main main main main" "header main main main main" "header main main main main" "header main main main main" "header main main main main" "header main main main main" "header main main main main" "header main main main main" "header main main main main" "header main main main main" "header main main main main" "header main main main main" "header main main main main" "header main main main main" "header main main main main" "header main main main main" "menu main main main main" "menu main main main main" "menu main main main main" "menu main main main main" "menu main main main main" "menu main main main main" "menu main main main main" "menu main main main main" "menu main main main main" "menu main main main main" "menu main main main main" "menu main main main main" "menu main main main main" "menu main main main main" "menu main main main main" "menu main main main main" "menu main main main main" "menu main main main main" "menu main main main main" "menu main main main main" "menu main main main main" "menu main main main main" "menu main main main main" "menu main main main main" "menu main main main main" "menu main main main main" "menu main main main main" "menu main main main main";
-    gap: 10px 10px;
-    padding: 10px;
-}
-.grid-layout > div {
-    background-color: rgba(255, 255, 255, 0.8);
-    text-align: center;
-    padding: 20px 0;
-    font-size: 30px;
-    border: 5px solid black;
-  } */
+.preloader-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: white;
+    background-image: url('../res/preloader.gif');
+    /* background-size: 1300px 900px; */
+    background-size: 70% 110%;
+    background-position: 50% 40%;
+    z-index: 100;
+  }
