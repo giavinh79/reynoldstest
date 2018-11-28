@@ -10,7 +10,7 @@
  * git pull
  
  ### How to run this project (need to have node installed):
- * node index.js or npm start
+ * node index.js or npm start (if any dependencies are missing, run 'npm install')
  * open up localhost:80 on your browser
  
  ### How to contribute to this project:
