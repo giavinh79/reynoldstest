@@ -1,4 +1,5 @@
-const app = require('express')(); //dependencies and modules
+const express = require('express');
+const app = express();
 const http = require('http').Server(app);
 const cookieParser = require('cookie-parser');
 const fs = require('fs'); // bring in the file system api
@@ -43,11 +44,6 @@ app
   .get('/edit.html', (req, res) => res.sendFile(__dirname + '/edit.html'))
   .get('/css/edit.css', (req, res) => res.sendFile(__dirname + '/css/edit.css'))
   .get('/css/signup.css', (req, res) => res.sendFile(__dirname + '/css/signup.css'));
-
-for (i = 0; i < 47; i++)
-{
-  app.get('/res/weather/'+i+'.png', (req, res) => res.sendFile(__dirname + '/res/weather/'+i+'.png'))
-}   app.get('/res/weather/3200.png', (req, res) => res.sendFile(__dirname + '/res/weather/3200.png'));
 
 const bodyParser = require('body-parser'); // Necessary to get form data with Express
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -764,3 +760,53 @@ app.post('/content', function(req, res) {
 http.listen(PORT, function(){
     console.log('listening on localhost:80');
 });
+
+//Serving Weather image files - find a better way to do this probably
+app.get('/res/weather/1.png', (req, res) => res.sendFile(__dirname + '/res/weather/1.png'));
+app.get('/res/weather/2.png', (req, res) => res.sendFile(__dirname + '/res/weather/2.png'));
+app.get('/res/weather/3.png', (req, res) => res.sendFile(__dirname + '/res/weather/3.png'));
+app.get('/res/weather/4.png', (req, res) => res.sendFile(__dirname + '/res/weather/4.png'));
+app.get('/res/weather/5.png', (req, res) => res.sendFile(__dirname + '/res/weather/5.png'));
+app.get('/res/weather/6.png', (req, res) => res.sendFile(__dirname + '/res/weather/6.png'));
+app.get('/res/weather/7.png', (req, res) => res.sendFile(__dirname + '/res/weather/7.png'));
+app.get('/res/weather/8.png', (req, res) => res.sendFile(__dirname + '/res/weather/8.png'));
+app.get('/res/weather/9.png', (req, res) => res.sendFile(__dirname + '/res/weather/9.png'));
+app.get('/res/weather/10.png', (req, res) => res.sendFile(__dirname + '/res/weather/10.png'));
+app.get('/res/weather/11.png', (req, res) => res.sendFile(__dirname + '/res/weather/11.png'));
+app.get('/res/weather/12.png', (req, res) => res.sendFile(__dirname + '/res/weather/12.png'));
+app.get('/res/weather/13.png', (req, res) => res.sendFile(__dirname + '/res/weather/13.png'));
+app.get('/res/weather/14.png', (req, res) => res.sendFile(__dirname + '/res/weather/14.png'));
+app.get('/res/weather/15.png', (req, res) => res.sendFile(__dirname + '/res/weather/15.png'));
+app.get('/res/weather/16.png', (req, res) => res.sendFile(__dirname + '/res/weather/16.png'));
+app.get('/res/weather/17.png', (req, res) => res.sendFile(__dirname + '/res/weather/17.png'));
+app.get('/res/weather/18.png', (req, res) => res.sendFile(__dirname + '/res/weather/18.png'));
+app.get('/res/weather/19.png', (req, res) => res.sendFile(__dirname + '/res/weather/19.png'));
+app.get('/res/weather/20.png', (req, res) => res.sendFile(__dirname + '/res/weather/20.png'));
+app.get('/res/weather/21.png', (req, res) => res.sendFile(__dirname + '/res/weather/21.png'));
+app.get('/res/weather/22.png', (req, res) => res.sendFile(__dirname + '/res/weather/22.png'));
+app.get('/res/weather/23.png', (req, res) => res.sendFile(__dirname + '/res/weather/23.png'));
+app.get('/res/weather/24.png', (req, res) => res.sendFile(__dirname + '/res/weather/24.png'));
+app.get('/res/weather/25.png', (req, res) => res.sendFile(__dirname + '/res/weather/25.png'));
+app.get('/res/weather/26.png', (req, res) => res.sendFile(__dirname + '/res/weather/26.png'));
+app.get('/res/weather/27.png', (req, res) => res.sendFile(__dirname + '/res/weather/27.png'));
+app.get('/res/weather/28.png', (req, res) => res.sendFile(__dirname + '/res/weather/28.png'));
+app.get('/res/weather/29.png', (req, res) => res.sendFile(__dirname + '/res/weather/29.png'));
+app.get('/res/weather/30.png', (req, res) => res.sendFile(__dirname + '/res/weather/30.png'));
+app.get('/res/weather/31.png', (req, res) => res.sendFile(__dirname + '/res/weather/31.png'));
+app.get('/res/weather/32.png', (req, res) => res.sendFile(__dirname + '/res/weather/32.png'));
+app.get('/res/weather/33.png', (req, res) => res.sendFile(__dirname + '/res/weather/33.png'));
+app.get('/res/weather/34.png', (req, res) => res.sendFile(__dirname + '/res/weather/34.png'));
+app.get('/res/weather/35.png', (req, res) => res.sendFile(__dirname + '/res/weather/35.png'));
+app.get('/res/weather/36.png', (req, res) => res.sendFile(__dirname + '/res/weather/36.png'));
+app.get('/res/weather/37.png', (req, res) => res.sendFile(__dirname + '/res/weather/37.png'));
+app.get('/res/weather/38.png', (req, res) => res.sendFile(__dirname + '/res/weather/38.png'));
+app.get('/res/weather/39.png', (req, res) => res.sendFile(__dirname + '/res/weather/39.png'));
+app.get('/res/weather/40.png', (req, res) => res.sendFile(__dirname + '/res/weather/40.png'));
+app.get('/res/weather/41.png', (req, res) => res.sendFile(__dirname + '/res/weather/41.png'));
+app.get('/res/weather/42.png', (req, res) => res.sendFile(__dirname + '/res/weather/42.png'));
+app.get('/res/weather/43.png', (req, res) => res.sendFile(__dirname + '/res/weather/43.png'));
+app.get('/res/weather/44.png', (req, res) => res.sendFile(__dirname + '/res/weather/44.png'));
+app.get('/res/weather/45.png', (req, res) => res.sendFile(__dirname + '/res/weather/45.png'));
+app.get('/res/weather/46.png', (req, res) => res.sendFile(__dirname + '/res/weather/46.png'));
+app.get('/res/weather/47.png', (req, res) => res.sendFile(__dirname + '/res/weather/47.png'));
+app.get('/res/weather/3200.png', (req, res) => res.sendFile(__dirname + '/res/weather/3200.png'));
