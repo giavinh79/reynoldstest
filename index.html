@@ -49,6 +49,10 @@
             message.style.display = "block";
             message.innerHTML = '{{messageTwo}}';
           }
+
+        document.getElementById("viewDash").onclick = function () {
+          location.href = "/view.html";
+        };
       });
     </script>
   </head>
@@ -88,6 +92,9 @@
           </form>
         </div>
       </div>
+    </div>
+    <div style="text-align: center; margin-top: -6rem;">
+      <button type="button" id="viewDash" class="btn btn-primary" style="margin: 2rem; font-size: 1.5rem; padding: 1rem 5rem;">View Dashboard</button>
     </div>
     <div class="footer">
       Contact us at&nbsp<a href="mailto:blessstylesocs@gmail.com">blessstylesocs@gmail.com</a>&nbspfor any questions or concerns
