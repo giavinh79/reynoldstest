@@ -21,7 +21,7 @@ h1 {
 .loginWrapper {
   display: flex;
   flex-direction: row;
-  height: 80%;
+  height: 75%;
   padding-top: 1rem;
   /* font-size: 10rem; */
   /* background-color: black; */

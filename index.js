@@ -39,6 +39,7 @@ app
   .get('/css/loggedin.css', (req, res) => res.sendFile(__dirname + '/css/loggedin.css'))
   .get('/res/CompanyName.png', (req, res) => res.sendFile(__dirname + '/res/CompanyName.png'))
   .get('/loggedin.html', (req, res) => res.sendFile(__dirname + '/loggedin.html'))
+  .get('/view.html', (req, res) => res.sendFile(__dirname + '/view.html'))
   .get('/settings.html', (req, res) => res.sendFile(__dirname + '/settings.html'))
   .get('/css/settings.css', (req, res) => res.sendFile(__dirname + '/css/settings.css'))
   .get('/edit.html', (req, res) => res.sendFile(__dirname + '/edit.html'))
@@ -563,6 +564,7 @@ app.post('/deleteAdmin', function(req, res) {
 app.post('/content', function(req, res) {
   var content = "";
   var date = new Date();
+  date.setTime( date.getTime() - 5 * 60 * 60 * 1000 ); //Change from UTC to EST
   var imageDate;
 
   MongoClient.connect(url, { useNewUrlParser: true }, function(err, db) {
@@ -761,7 +763,7 @@ http.listen(PORT, function(){
     console.log('listening on localhost:80');
 });
 
-//Serving Weather image files - find a better way to do this probably
+//Serving Weather image files - find a better way to do this probably (maybe serve file only when client requests it)
 app.get('/res/weather/1.png', (req, res) => res.sendFile(__dirname + '/res/weather/1.png'));
 app.get('/res/weather/2.png', (req, res) => res.sendFile(__dirname + '/res/weather/2.png'));
 app.get('/res/weather/3.png', (req, res) => res.sendFile(__dirname + '/res/weather/3.png'));

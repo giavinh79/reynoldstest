@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title>Reynold's Dashboard</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+        <script src="//cdnjs.cloudflare.com/ajax/libs/jquery.simpleWeather/3.1.0/jquery.simpleWeather.min.js"></script>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/weather-icons/2.0.10/css/weather-icons.css" rel="stylesheet" />
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+        <link rel="stylesheet" href="css/loggedin.css">
+        <script>
+            $.simpleWeather({
+                location: 'Guelph, Ontario',
+                unit: 'c',
+                success: function(weather) {
+                    html = '<h2 style="font-size: 3rem">'+ weather.city+', '+ weather.region+' '+ weather.country+'</h2>';
+                    html += '<p>'+ weather.temp+'&deg; '+ weather.units.temp;
+                    // html += '<img src="'+ weather.image+'"></p>';
+                    console.log(weather.code);
+                    html += '<img width="125px" src="res/weather/'+weather.code+'.png">';
+                    $("#weather").html(html);
+                },
+                error: function(error) {
+                    $("#weather").html("<p>"+error+"</p>");
+                    console.log(error);
+                }
+            });
+
+            $(document).ready(function() {
+                preloaderFadeOutTime = 800;
+                var preloader = $('.preloader-wrapper');
+                preloader.delay(400).fadeOut(preloaderFadeOutTime);
+
+                if (''.charAt(0) != '{')
+                {
+                    startTime();
+                }
+
+                function startTime()
+                {
+                    let dateObj= new Date();
+                    let month = dateObj.getMonth();
+                    let monthStr = "";
+                    if(month == 0)
+                    {
+                        monthStr = "January";
+                    }
+                    else if(month == 1)
+                    {
+                        monthStr = "Febuary";
+                    }
+                    else if(month == 2)
+                    {
+                        monthStr = "March";
+                    }
+                    else if(month == 3)
+                    {
+                        monthStr = "April";
+                    }
+                    else if(month == 4)
+                    {
+                        monthStr = "May";
+                    }
+                    else if(month == 5)
+                    {
+                        monthStr = "June";
+                    }
+                    else if(month == 6)
+                    {
+                        monthStr = "July";
+                    }
+                    else if(month == 7)
+                    {
+                        monthStr = "August";
+                    }
+                    else if(month == 8)
+                    {
+                        monthStr = "September";
+                    }
+                    else if(month == 9)
+                    {
+                        monthStr = "October";
+                    }
+                    else if(month== 10)
+                    {
+                        monthStr= "November"
+                    }
+                    else
+                    {
+                        monthStr = "December";
+                    }
+                    let weekday = dateObj.getDay();
+                    let weekdayStr = "";
+                    if(weekday == 1)
+                    {
+                        weekdayStr = "Monday";
+                    }
+                    else if(weekday == 2)
+                    {
+                        weekdayStr = "Tuesday";
+                    }
+                    else if(weekday == 3)
+                    {
+                        weekdayStr = "Wednesday";
+                    }
+                    else if(weekday == 4)
+                    {
+                        weekdayStr = "Thursday";
+                    }
+                    else if(weekday == 5)
+                    {
+                        weekdayStr = "Friday";
+                    }
+                    else if(weekday == 6)
+                    {
+                        weekdayStr = "Saturday";
+                    }
+                    else{
+                        weekdayStr = "Sunday";
+                    }
+                    let year = dateObj.getFullYear();
+                    let date  = dateObj.getDate();
+                    let dateStr = date.toString();
+                    let type = "";
+                    if(dateStr.charAt(1) === '1')
+                    {
+                        type = "st"
+                    }
+                    else if(dateStr.charAt(1) === '2')
+                    {
+                        type = "nd";
+                    }
+                    else if(dateStr.charAt(1)=== '3')
+                    {
+                        type = "rd";
+                    }
+                    else
+                    {
+                        type = "th"
+                    }
+                    let hour = dateObj.getHours();
+                    let centralTime  = "";
+                    if(hour > 12 && hour<= 24)
+                    {
+                        hour = hour -12;
+                        centralTime = "PM";
+                    }
+                    else
+                    {
+                        centralTime = "AM";
+                    }
+                    let minutes = dateObj.getMinutes();
+                    let seconds = dateObj.getSeconds();
+                    minutes = checkTime(minutes);
+                    seconds = checkTime(seconds);
+                    document.getElementById("time").innerHTML = weekdayStr + " " + monthStr + " " + date + type+ " " +year+ "<br>" +  hour + ":" + minutes + ":" + seconds + " " + centralTime;
+                    let clock = setTimeout(startTime,500);
+                }
+
+                function checkTime(i)
+                {
+                    if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+                        return i;
+                }
+
+                var res;
+                var imageData;
+                var count = 0;
+
+                $.ajax({ //Verifies whether client is a logged in user, if not, returns to homepage
+                    type: 'POST',
+                    url: 'content',
+                    dataType: "text",
+                    success: function (data) {
+                        res = data.replace(/-/g, "").split("~!~");
+                        res = res.slice(0, res.length-1);
+                        imageURL = "https://res.cloudinary.com/dhwlyljdd/image/upload/v1542938632/" + res[res.length-1].substring(0, res[res.length-1].length-9);
+                        $('.rightPane').css('background-image', 'url("'+ imageURL +'")');
+                        count = 0;
+                    },
+                    error: function (xhr, status, error) {
+                        console.log(error);
+                    }
+                });
+
+                setInterval(function() {
+                        if (res[count] == null) count = 0;
+                        imageURL = "https://res.cloudinary.com/dhwlyljdd/image/upload/v1542938632/" + res[count].substring(0, res[count].length-9);
+                        $('.rightPane').css('background-image', 'url("'+ imageURL +'")');
+                        count++;
+                    // }
+                }, 5000);
+
+                setInterval(function () {
+                    $.ajax({ //Verifies whether client is a logged in user, if not, returns to homepage
+                        type: 'POST',
+                        url: 'content',
+                        dataType: "text",
+                        success: function (data) {
+                            res = data.replace(/-/g, "").split("~!~");
+                            res = res.slice(0, res.length-1);
+                            imageURL = "https://res.cloudinary.com/dhwlyljdd/image/upload/v1542938632/" + res[res.length-1].substring(0, res[res.length-1].length-9);
+                            $('.rightPane').css('background-image', 'url("'+ imageURL +'")');
+                            count = 0;
+                        },
+                        error: function (xhr, status, error) {
+                            console.log(error);
+                        }
+                    });
+                }, 60000);
+            });
+
+            function logout() {
+                var cookies = document.cookie.split("; ");
+                for (var c = 0; c < cookies.length; c++) {
+                    var d = window.location.hostname.split(".");
+                    while (d.length > 0) {
+                        var cookieBase = encodeURIComponent(cookies[c].split(";")[0].split("=")[0]) + '=; expires=Thu, 01-Jan-1970 00:00:01 GMT; domain=' + d.join('.') + ' ;path=';
+                        var p = location.pathname.split('/');
+                        document.cookie = cookieBase + '/';
+                        while (p.length > 0) {
+                            document.cookie = cookieBase + p.join('/');
+                            p.pop();
+                        };
+                        d.shift();
+                    }
+                }
+                return true;
+            }
+        </script>
+    </head>
+    <body>
+      <div class="preloader-wrapper">  
+      </div>
+
+      <div class="wrapper">
+            <nav class="navbar navbar-default">
+                <div class="container-fluid">
+                    <ul class="nav navbar-nav">
+                        <li id="logout"><a href='/'>Go back</a></li>
+                    </ul>
+                </div>
+            </nav>
+
+            <div class="contentWrapper">
+                <div class="leftPane">
+                    <div class ="item1">
+                        <h2>SCHOOL OF <br>COMPUTER SCIENCE</h2>
+                        <h4>socsreynolds.site</h4>
+                    </div>
+                    <div class= "item2">
+                            <div id="weather">
+                                
+                            </div>
+                            <h3 id= "time"></h3>
+
+                    </div>
+                </div>
+
+                <div class="rightPane">
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
