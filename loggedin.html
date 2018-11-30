@@ -174,7 +174,7 @@
                     let seconds = dateObj.getSeconds();
                     minutes = checkTime(minutes);
                     seconds = checkTime(seconds);
-                    document.getElementById("time").innerHTML = weekdayStr + " " + monthStr + " " + date + type+ " " +year+ "<br>" +  hour + ":" + minutes + ":" + seconds + " " + centralTime;
+                    document.getElementById("time").innerHTML = weekdayStr + "<br>" + monthStr + " " + date + type+ " " +year+ "<br><h1>" +  hour + ":" + minutes + ":" + seconds + " " + centralTime + "</h1>";
                     let clock = setTimeout(startTime,500);
                 }
 
@@ -270,16 +270,14 @@
             <div class="contentWrapper">
                 <div class="leftPane">
                     <div class ="item1">
-                        <h2>SCHOOL OF <br>COMPUTER SCIENCE</h2>
+                        <img src="res/socs-logo.png" style="width: 76%"/>
                         <h4>socsreynolds.site</h4>
-                        <!-- <h2>COMPUTER SCIENCE</h2> -->
                     </div>
                     <div class= "item2">
                             <div id="weather">
                                 
                             </div>
                             <h3 id= "time"></h3>
-                            <!-- <img src="res/reynolds.PNG" style="width: 80%; padding: 1rem; border-radius: 20%;"/> -->
 
                     </div>
                 </div>

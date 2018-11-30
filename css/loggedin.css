@@ -2,7 +2,6 @@ html, body {
     margin: 0;
     padding: 0;
     height: 100%;
-    /* font-family: 'Montserrat'; */
 }
 
 .wrapper {
@@ -84,8 +83,17 @@ h2 {
     flex-direction: column;
 }
 
+.item2 {
+    background-color: #b5bec7;
+}
+
+h1 {
+    font-family: monospace;
+}
+
 #time {
-    font-size: 2.3rem;
+    font-size: 3rem;
+    font-family: monospace;
 }
 
 #weather {
