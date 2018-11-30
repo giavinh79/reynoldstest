@@ -30,6 +30,7 @@ app
   .get('/', (req, res) => res.sendFile(__dirname + '/index.html'))
   .get('/favicon.ico', (req, res) => res.sendFile(__dirname + '/favicon.ico'))
   .get('/res/noimage.png', (req, res) => res.sendFile(__dirname + '/res/noimage.png'))
+  .get('/res/socs-logo.png', (req, res) => res.sendFile(__dirname + '/res/socs-logo.png'))
   .get('/res/preloader.gif', (req, res) => res.sendFile(__dirname + '/res/preloader.gif'))
   .get('/create.html', (req, res) => res.sendFile(__dirname + '/create.html'))
   .get('/css/home.css', (req, res) => res.sendFile(__dirname + '/css/home.css'))
