@@ -18,11 +18,9 @@
                 location: 'Guelph, Ontario',
                 unit: 'c',
                 success: function(weather) {
-                    html = '<h2 style="font-size: 3rem">'+ weather.city+', '+ weather.region+' '+ weather.country+'</h2>';
+                    html = '<h2 style="font-size: 3rem">'+ weather.city + ', '+ weather.region+' '+ weather.country+'</h2>';
                     html += '<p>'+ weather.temp+'&deg; '+ weather.units.temp;
-                    // html += '<img src="'+ weather.image+'"></p>';
-                    console.log(weather.code);
-                    html += '<img width="125px" src="res/weather/'+weather.code+'.png">';
+                    html += '<img width="125px" src="res/weather/'+ weather.code +'.png">';
                     $("#weather").html(html);
                 },
                 error: function(error) {
@@ -142,23 +140,7 @@
                     let year = dateObj.getFullYear();
                     let date  = dateObj.getDate();
                     let dateStr = date.toString();
-                    let type = "";
-                    if(dateStr.charAt(1) === '1')
-                    {
-                        type = "st"
-                    }
-                    else if(dateStr.charAt(1) === '2')
-                    {
-                        type = "nd";
-                    }
-                    else if(dateStr.charAt(1)=== '3')
-                    {
-                        type = "rd";
-                    }
-                    else
-                    {
-                        type = "th"
-                    }
+
                     let hour = dateObj.getHours();
                     let centralTime  = "";
                     if(hour > 12 && hour<= 24)
@@ -174,7 +156,7 @@
                     let seconds = dateObj.getSeconds();
                     minutes = checkTime(minutes);
                     seconds = checkTime(seconds);
-                    document.getElementById("time").innerHTML = weekdayStr + "<br>" + monthStr + " " + date + type+ " " +year+ "<br><h1>" +  hour + ":" + minutes + ":" + seconds + " " + centralTime + "</h1>";
+                    document.getElementById("time").innerHTML = weekdayStr + "<br>" + monthStr + " " + date + ", " + year + "<br><h1>" +  hour + ":" + minutes + ":" + seconds + " " + centralTime + "</h1>";
                     let clock = setTimeout(startTime,500);
                 }
 
@@ -274,19 +256,13 @@
                         <h4>socsreynolds.site</h4>
                     </div>
                     <div class= "item2">
-                            <div id="weather">
-                                
-                            </div>
-                            <h3 id= "time"></h3>
-
+                        <div id="weather"></div>
+                        <h3 id= "time"></h3>
                     </div>
                 </div>
 
-                <div class="rightPane">
-                    <!-- <h1>Content Placeholder</h1> -->
-                </div>
+                <div class="rightPane"></div>
             </div>
         </div>
     </body>
-    <!-- <h3>View</h3> -->
 </html>

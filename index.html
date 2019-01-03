@@ -25,7 +25,7 @@
             message = document.getElementById('loginMessage');
             message.style.display = "block";
             message.innerHTML = '{{message}}';
-            var userInput = document.getElementById('username');
+            // var userInput = document.getElementById('username');
             // if (document.cookie.indexOf(";") < 0 && document.cookie.includes("invalidLogin"))
             // {
             //   userInput.value = decodeURIComponent(document.cookie.substring(13, document.cookie.length));
@@ -62,11 +62,11 @@
     </div>
     <h1>Reynold's Board Homepage</h1>
     <div style="text-align: center;">
-      <button type="button" id="viewDash" class="btn btn-primary" style="margin: 2rem; font-size: 1.5rem; padding: 2rem 12rem;;">View Dashboard</button>
+      <button type="button" id="viewDash" class="btn btn-primary" style="margin: 2rem; font-size: 1.5rem; padding: 2rem 12rem; background-color: #54829E; border: #54829E; border-radius: 15px;">View Dashboard</button>
     </div>
     <div class="loginWrapper">
       <div class="signin">
-        <div>
+        <div style="margin-bottom: 15%;">
           <i class="fa fa-users" style="font-size:36px; padding-bottom: 0.3em;"></i>
           <form id="loginForm" action="login" method="post">
             <div class="input-group">
@@ -84,7 +84,7 @@
       </div>
       <div style="margin: 1rem 1rem 7rem 1rem; width: 0.5rem; background: grey;"></div>
       <div class="signup">
-        <div>
+        <div style="margin-bottom: 15%;">
           <form id="signupForm" action="signup" method="post">
             <div class="input-group">
               <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
