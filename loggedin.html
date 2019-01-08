@@ -6,26 +6,24 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
-        <script src="//cdnjs.cloudflare.com/ajax/libs/jquery.simpleWeather/3.1.0/jquery.simpleWeather.min.js"></script>
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/weather-icons/2.0.10/css/weather-icons.css" rel="stylesheet" />
-
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
         <link rel="stylesheet" href="css/loggedin.css">
         <script>
-            $.simpleWeather({
-                location: 'Guelph, Ontario',
-                unit: 'c',
-                success: function(weather) {
-                    html = '<h2 style="font-size: 3rem">'+ weather.city + ', '+ weather.region+' '+ weather.country+'</h2>';
-                    html += '<p>'+ weather.temp+'&deg; '+ weather.units.temp;
-                    html += '<img width="125px" src="res/weather/'+ weather.code +'.png">';
+            $.ajax({ // AJAX API call to OpenWeather service for temp. information
+                type: 'GET',
+                url: 'http://api.openweathermap.org/data/2.5/weather?q=Guelph,CA&APPID=8fc9624790f569b295a99077f4385dab&units=metric',
+                dataType: "json",
+                success: function (data) {
+                    html = '<h2 style="font-size: 3rem">'+ "Guelph" + ', '+ "ON"+' '+ "Canada" +'</h2>';
+                    html += '<p>'+ parseInt(data.main.temp) + '&deg; '+ "C";
+                    html += '<img width="125px" src="res/weather/'+ data.weather[0].icon +'.png"></p>';
                     $("#weather").html(html);
+                    console.log(data);
                 },
-                error: function(error) {
-                    $("#weather").html("<p>"+error+"</p>");
-                    console.log(error);
+                error: function (xhr, status, error) {
+                    console.log("Weather information unavailable");
                 }
             });
 
@@ -252,7 +250,7 @@
             <div class="contentWrapper">
                 <div class="leftPane">
                     <div class ="item1">
-                        <img src="res/socs-logo.png" style="width: 76%"/>
+                        <img src="res/socs-logo.png" style="width: 76%" alt="SOCS logo"/>
                         <h4>socsreynolds.site</h4>
                     </div>
                     <div class= "item2">
