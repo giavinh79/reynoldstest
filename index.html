@@ -20,31 +20,13 @@
           message.style.display = "none";
           var message = document.getElementById('verifyMessage');
           message.style.display = "none";
-          if ('{{message}}'.charAt(0) != '{')
-          {
+          if ('{{message}}'.charAt(0) != '{') {
             message = document.getElementById('loginMessage');
             message.style.display = "block";
             message.innerHTML = '{{message}}';
-            // var userInput = document.getElementById('username');
-            // if (document.cookie.indexOf(";") < 0 && document.cookie.includes("invalidLogin"))
-            // {
-            //   userInput.value = decodeURIComponent(document.cookie.substring(13, document.cookie.length));
-            // }
-            // else
-            // {
-            //   if (document.cookie.match('invalidLogin=.*?(?:;)') == null)
-            //   {
-            //     userInput.value = decodeURIComponent(document.cookie.substring(document.cookie.indexOf("invalidLogin=")+13, document.cookie.length));
-            //   }
-            //   else
-            //   {
-            //     userInput.value = decodeURIComponent(document.cookie.match('invalidLogin=.*?(?:;)')[0].substring(13, document.cookie.length-1));
-            //   }
-            // }
           }
 
-          if ('{{messageTwo}}'.charAt(0) != '{')
-          {
+          if ('{{messageTwo}}'.charAt(0) != '{') {
             message = document.getElementById('verifyMessage');
             message.style.display = "block";
             message.innerHTML = '{{messageTwo}}';
@@ -53,6 +35,14 @@
         document.getElementById("viewDash").onclick = function () {
           location.href = "/view.html";
         };
+
+        var docHeight = $(window).height();
+        var footerHeight = $('#footer').height();
+        var footerTop = $('#footer').position().top + footerHeight;
+
+        if (footerTop < docHeight) {
+          $('#footer').css('margin-top', 10 + (docHeight - footerTop) + 'px');
+        }
       });
     </script>
   </head>
@@ -84,8 +74,6 @@
       </div>
       <div class="vertDivider"></div>
       <div class="horizDivider"><div></div></div>
-      <!-- <div class="divider"></div> -->
-      <!-- <div class="" -->
       <div class="signup">
         <div style="margin-bottom: 15%;">
           <form id="signupForm" action="signup" method="post">
@@ -99,7 +87,7 @@
         </div>
       </div>
     </div>
-    <div class="bottomNav"><div class="footer">Contact us at&nbsp<a href="mailto:blessstylesocs@gmail.com">blessstylesocs@gmail.com</a>&nbspfor any questions or concerns</div></div>
+    <div class="bottomNav"><div class="footer" id="footer">Contact us at&nbsp<a href="mailto:blessstylesocs@gmail.com">blessstylesocs@gmail.com</a>&nbspfor any questions or concerns</div></div>
     <div class="bottomNav-mobile"><div class="footer"><a href="mailto:blessstylesocs@gmail.com">blessstylesocs@gmail.com</a></div></div>
   </body>
 </html>
