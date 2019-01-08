@@ -70,6 +70,10 @@ h1 {
   text-align: center;
 }
 
+.signin > div {
+  margin-bottom: 15%;
+}
+
 .footer {
   display: flex;
   height: 5rem;
@@ -93,8 +97,89 @@ h1 {
   height: 100%;
 }
 
+.horizDivider {
+  display: none;
+  margin-top: -2rem;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.horizDivider div {
+  width: 50%;
+  height: 2rem;
+  border-top: 1px solid grey;
+}
+
+.bottomNav-mobile {
+  display: none;
+}
+
+.vertDivider {
+  margin: 1rem 1rem 7rem 1rem;
+  width: 0.5rem;
+  background: grey;
+}
+
+#viewDash {
+  margin: 2rem; 
+  font-size: 1.5rem;
+  padding: 2rem 12rem;
+  background-color: #54829E;
+  border: #54829E;
+  border-radius: 15px;
+}
+
+@media only screen and (min-height: 1000px) {
+  .bottomNav {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+  }
+}
+
 @media only screen and (max-width: 1500px) {
   h1 {
     font-size: 8rem;
+  }
+}
+
+@media only screen and (max-width: 900px) {
+  h1 {
+    font-size: 6rem;
+  }
+}
+
+/* Phone */
+@media only screen and (max-width: 500px) {
+  h1 {
+    font-size: 4rem;
+  }
+
+  .header {
+    text-align: center;
+  }
+
+  .loginWrapper {
+    flex-direction: column;
+    height: auto;
+    padding-top: 0;
+  }
+
+  #viewDash {
+    margin: 0 2rem 2rem 2rem;
+    padding: 2rem 10rem;
+  }
+
+  .horizDivider {
+    display: flex;
+  }
+
+  .bottomNav, .vertDivider {
+    display: none;
+  }
+
+  .bottomNav-mobile {
+    display: block;
   }
 }

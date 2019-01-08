@@ -58,15 +58,15 @@
   </head>
   <body>
     <div class="header">
-    <img src="res/CompanyName.png"/>
+      <img src="res/CompanyName.png"/>
     </div>
     <h1>Reynold's Board Homepage</h1>
     <div style="text-align: center;">
-      <button type="button" id="viewDash" class="btn btn-primary" style="margin: 2rem; font-size: 1.5rem; padding: 2rem 12rem; background-color: #54829E; border: #54829E; border-radius: 15px;">View Dashboard</button>
+      <button type="button" id="viewDash" class="btn btn-primary">View Dashboard</button>
     </div>
     <div class="loginWrapper">
       <div class="signin">
-        <div style="margin-bottom: 15%;">
+        <div>
           <i class="fa fa-users" style="font-size:36px; padding-bottom: 0.3em;"></i>
           <form id="loginForm" action="login" method="post">
             <div class="input-group">
@@ -82,7 +82,10 @@
           <p id ="loginMessage" style="text-align: right; color: #c10505;"></p>
         </div>
       </div>
-      <div style="margin: 1rem 1rem 7rem 1rem; width: 0.5rem; background: grey;"></div>
+      <div class="vertDivider"></div>
+      <div class="horizDivider"><div></div></div>
+      <!-- <div class="divider"></div> -->
+      <!-- <div class="" -->
       <div class="signup">
         <div style="margin-bottom: 15%;">
           <form id="signupForm" action="signup" method="post">
@@ -96,6 +99,7 @@
         </div>
       </div>
     </div>
-    <div style="position: absolute; bottom: 0; width: 100%;"><div class="footer">Contact us at&nbsp<a href="mailto:blessstylesocs@gmail.com">blessstylesocs@gmail.com</a>&nbspfor any questions or concerns</div></div>
+    <div class="bottomNav"><div class="footer">Contact us at&nbsp<a href="mailto:blessstylesocs@gmail.com">blessstylesocs@gmail.com</a>&nbspfor any questions or concerns</div></div>
+    <div class="bottomNav-mobile"><div class="footer"><a href="mailto:blessstylesocs@gmail.com">blessstylesocs@gmail.com</a></div></div>
   </body>
 </html>
